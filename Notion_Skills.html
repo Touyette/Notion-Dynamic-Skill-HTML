@@ -23,13 +23,17 @@
             justify-content: center;
             align-items: center;
             color: #ffffff;
-            font-size: 24px;
             text-align: center;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             transition: transform 0.6s ease, box-shadow 0.6s ease, width 0.6s ease, height 0.6s ease, top 0.6s ease, background 0.6s ease;
             position: relative;
-            margin: 10px;
+            margin: 20px; /* Increase the space between bubbles */
+        }
+        .skill-bubble span {
+            padding: 5px; /* Add padding to help with longer text visibility */
+            font-size: 16px; /* Adjust font size for better fit */
+            word-wrap: break-word; /* Make sure long words wrap if needed */
         }
         .skill-bubble:hover {
             transform: scale(1.1);
@@ -85,7 +89,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded and parsed");
 
-            // Embedded skills data instead of fetching from JSON file
             const skillsData = [
                 {
                     "name": "AI",
@@ -120,9 +123,16 @@
                         console.log("Adding skill:", skill.name);
                         const bubble = document.createElement('div');
                         bubble.className = 'skill-bubble';
-                        bubble.style.width = `${skill.size * 15}px`;
-                        bubble.style.height = `${skill.size * 15}px`;
-                        bubble.textContent = skill.name;
+
+                        // Adjust bubble size based on skill level, increase to account for long text
+                        bubble.style.width = `${skill.size * 20}px`;
+                        bubble.style.height = `${skill.size * 20}px`;
+
+                        // Create a span to wrap the text for better styling and layout
+                        const bubbleText = document.createElement('span');
+                        bubbleText.textContent = skill.name;
+
+                        bubble.appendChild(bubbleText);
                         bubble.onclick = () => showSkillDetails(skill);
                         bubblesContainer.appendChild(bubble);
                     });
