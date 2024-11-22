@@ -76,25 +76,32 @@
 
     <script>
         async function loadSkills() {
-            const response = await fetch('skills.json');
-            const skills = await response.json();
+            try {
+                const response = await fetch('skills.json');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const skills = await response.json();
 
-            const bubblesContainer = document.getElementById('bubblesContainer');
-            bubblesContainer.style.display = 'flex';
-            bubblesContainer.style.flexWrap = 'wrap';
-            bubblesContainer.style.justifyContent = 'center';
-            bubblesContainer.style.alignItems = 'center';
-            bubblesContainer.style.height = '100vh';
+                const bubblesContainer = document.getElementById('bubblesContainer');
+                bubblesContainer.style.display = 'flex';
+                bubblesContainer.style.flexWrap = 'wrap';
+                bubblesContainer.style.justifyContent = 'center';
+                bubblesContainer.style.alignItems = 'center';
+                bubblesContainer.style.height = '100vh';
 
-            skills.forEach(skill => {
-                const bubble = document.createElement('div');
-                bubble.className = 'skill-bubble';
-                bubble.style.width = `${skill.size * 15}px`;
-                bubble.style.height = `${skill.size * 15}px`;
-                bubble.textContent = skill.name;
-                bubble.onclick = () => showSkillDetails(skill);
-                bubblesContainer.appendChild(bubble);
-            });
+                skills.forEach(skill => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'skill-bubble';
+                    bubble.style.width = `${skill.size * 15}px`;
+                    bubble.style.height = `${skill.size * 15}px`;
+                    bubble.textContent = skill.name;
+                    bubble.onclick = () => showSkillDetails(skill);
+                    bubblesContainer.appendChild(bubble);
+                });
+            } catch (error) {
+                console.error('Failed to load skills:', error);
+            }
         }
 
         function showSkillDetails(skill) {
