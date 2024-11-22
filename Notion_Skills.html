@@ -17,8 +17,6 @@
             flex-direction: column;
         }
         .skill-bubble {
-            width: 150px;
-            height: 150px;
             background: linear-gradient(135deg, #3498db, #1f8bcd);
             border-radius: 50%;
             display: flex;
@@ -31,6 +29,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             transition: transform 0.6s ease, box-shadow 0.6s ease, width 0.6s ease, height 0.6s ease, top 0.6s ease, background 0.6s ease;
             position: relative;
+            margin: 10px;
         }
         .skill-bubble:hover {
             transform: scale(1.1);
@@ -66,39 +65,63 @@
     </style>
 </head>
 <body>
-    <div class="skill-bubble" id="skillBubble" onclick="showSkillDetails()">
-        AI
-    </div>
+    <div id="bubblesContainer"></div>
     
     <div class="banner" id="skillBanner">
         <span class="back-arrow" onclick="hideSkillDetails()">&#8592; Back</span>
-        <span>AI</span>
+        <span id="skillBannerName"></span>
     </div>
 
-    <div class="details" id="skillDetails">
-        AI: I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights.
-    </div>
+    <div class="details" id="skillDetails"></div>
 
     <script>
-        function showSkillDetails() {
-            const skillBubble = document.getElementById('skillBubble');
+        async function loadSkills() {
+            const response = await fetch('skills.json');
+            const skills = await response.json();
+
+            const bubblesContainer = document.getElementById('bubblesContainer');
+            bubblesContainer.style.display = 'flex';
+            bubblesContainer.style.flexWrap = 'wrap';
+            bubblesContainer.style.justifyContent = 'center';
+            bubblesContainer.style.alignItems = 'center';
+            bubblesContainer.style.height = '100vh';
+
+            skills.forEach(skill => {
+                const bubble = document.createElement('div');
+                bubble.className = 'skill-bubble';
+                bubble.style.width = `${skill.size * 15}px`;
+                bubble.style.height = `${skill.size * 15}px`;
+                bubble.textContent = skill.name;
+                bubble.onclick = () => showSkillDetails(skill);
+                bubblesContainer.appendChild(bubble);
+            });
+        }
+
+        function showSkillDetails(skill) {
+            const bubblesContainer = document.getElementById('bubblesContainer');
             const skillBanner = document.getElementById('skillBanner');
             const skillDetails = document.getElementById('skillDetails');
 
-            skillBubble.style.transform = 'scale(1.2)';
-            skillBubble.style.top = '-200px';
-            skillBubble.style.opacity = '0';
-            setTimeout(() => {
-                skillBubble.style.display = 'none';
-                skillBanner.style.display = 'flex';
-                skillDetails.style.display = 'block';
-                skillBanner.style.top = '0';
-                skillDetails.style.opacity = '1';
-            }, 600);
+            bubblesContainer.style.display = 'none';
+            skillBanner.style.display = 'flex';
+            skillBanner.style.top = '0';
+            document.getElementById('skillBannerName').textContent = skill.name;
+            skillDetails.style.display = 'block';
+            skillDetails.style.opacity = '1';
+            skillDetails.innerHTML = `${skill.description}<br><br>`;
+
+            skill.videos.forEach(video => {
+                const videoLink = document.createElement('a');
+                videoLink.href = `videos/${video}`;
+                videoLink.textContent = `Watch ${video}`;
+                videoLink.style.display = 'block';
+                videoLink.style.color = '#3498db';
+                skillDetails.appendChild(videoLink);
+            });
         }
 
         function hideSkillDetails() {
-            const skillBubble = document.getElementById('skillBubble');
+            const bubblesContainer = document.getElementById('bubblesContainer');
             const skillBanner = document.getElementById('skillBanner');
             const skillDetails = document.getElementById('skillDetails');
 
@@ -107,12 +130,11 @@
             setTimeout(() => {
                 skillBanner.style.display = 'none';
                 skillDetails.style.display = 'none';
-                skillBubble.style.display = 'flex';
-                skillBubble.style.transform = 'scale(1)';
-                skillBubble.style.top = '0';
-                skillBubble.style.opacity = '1';
+                bubblesContainer.style.display = 'flex';
             }, 600);
         }
+
+        loadSkills();
     </script>
 </body>
 </html>
