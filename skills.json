@@ -1,17 +1,37 @@
 [
     {
         "name": "AI",
+        "fullName": "Artificial Intelligence",
         "size": 10,
         "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
     },
     {
-        "name": "Web Development",
+        "name": "Web Dev",
+        "fullName": "Web Development",
         "size": 2,
         "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."    
     },
     {
+        "name": "ML",
+        "fullName": "Machine Learning",
+        "size": 4,
+        "description": "I've studied a lot of the ML techniques that data scientists and AI engineers learn."
+    },
+    {
+        "name": "2nd Brain",
+        "fullName": "Second Brain in Obsidian",
+        "size": 7,
+        "description": "I gather all the knowledge I have in a second brain in Obsidian."
+    },
+    {
         "name": "UX",
+        "fullName": "User Experience Design",
         "size": 8,
-        "description": "UX"
+        "description": "Extensive experience in UX design, including user research, prototyping, and creating intuitive user interfaces."
+    }, 
+    {"name": "Research Methodology",
+    "fullName": "Research Methodology",
+    "size": 8,
+    "description": "I have experience with a variety of research methodologies, including experiment design, data collection, and data analysis, often focusing on "
     }
 ]

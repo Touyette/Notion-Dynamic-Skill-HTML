@@ -7,17 +7,22 @@
     <style>
         body {
             background-color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            transition: all 0.5s ease;
-            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #gridContainer {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            margin: auto;
+            margin-top: 5vh;
+            background-color: #333;
+            border: 2px solid #444;
+            display: none; /* Initially hidden */
         }
         .skill-bubble {
-            background: linear-gradient(135deg, #3498db, #1f8bcd);
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -26,34 +31,36 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            transition: transform 0.6s ease, box-shadow 0.6s ease, width 0.6s ease, height 0.6s ease, top 0.6s ease, background 0.6s ease;
-            position: relative;
-            margin: 20px; /* Increase the space between bubbles */
+            position: absolute;
+            transition: transform 0.6s ease, box-shadow 0.6s ease, left 0.6s ease, top 0.6s ease;
+            overflow: hidden;
         }
         .skill-bubble span {
-            padding: 5px; /* Add padding to help with longer text visibility */
-            font-size: 16px; /* Adjust font size for better fit */
-            word-wrap: break-word; /* Make sure long words wrap if needed */
+            padding: 5px;
+            font-size: 16px;
+            word-wrap: break-word;
         }
         .skill-bubble:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(52, 152, 219, 0.8);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
         }
         .banner {
             width: 100%;
             height: 100px;
-            background: linear-gradient(135deg, #3498db, #1f8bcd);
             color: #ffffff;
             display: none;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 0 20px;
             box-sizing: border-box;
             position: relative;
             top: -100px;
-            transition: top 0.6s ease;
+            transition: top 0.6s ease, opacity 0.6s ease;
+            opacity: 0;
         }
         .banner .back-arrow {
+            position: absolute;
+            left: 20px;
             font-size: 24px;
             cursor: pointer;
         }
@@ -66,17 +73,13 @@
             opacity: 0;
             transition: opacity 0.6s ease;
         }
-        .validation-message {
-            color: #00ff00;
-            font-size: 16px;
-            margin-top: 20px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
-    <div id="bubblesContainer"></div>
-    
+    <div id="gridContainer">
+        <div id="bubblesContainer"></div>
+    </div>
+
     <div class="banner" id="skillBanner">
         <span class="back-arrow" onclick="hideSkillDetails()">&#8592; Back</span>
         <span id="skillBannerName"></span>
@@ -89,71 +92,81 @@
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded and parsed");
 
-            const skillsData = [
-                {
-                    "name": "AI",
-                    "size": 10,
-                    "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
-                },
-                {
-                    "name": "Web Development",
-                    "size": 2,
-                    "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."
-                },
-                {
-                    "name": "UX",
-                    "size": 8,
-                    "description": "UX"
-                }
-            ];
-
             function loadSkills() {
-                console.log("Loading skills...");
-                const bubblesContainer = document.getElementById('bubblesContainer');
-                console.log("Bubbles container found:", !!bubblesContainer);
-                
-                if (bubblesContainer) {
-                    bubblesContainer.style.display = 'flex';
-                    bubblesContainer.style.flexWrap = 'wrap';
-                    bubblesContainer.style.justifyContent = 'center';
-                    bubblesContainer.style.alignItems = 'center';
-                    bubblesContainer.style.height = '100vh';
+                fetch('skills.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(skillsData => {
+                        console.log("Loading skills...");
+                        const bubblesContainer = document.getElementById('bubblesContainer');
+                        const gridContainer = document.getElementById('gridContainer');
+                        console.log("Bubbles container found:", !!bubblesContainer);
 
-                    skillsData.forEach(skill => {
-                        console.log("Adding skill:", skill.name);
-                        const bubble = document.createElement('div');
-                        bubble.className = 'skill-bubble';
+                        if (bubblesContainer) {
+                            skillsData.forEach((skill, index) => {
+                                console.log("Adding skill:", skill.name);
+                                const bubble = document.createElement('div');
+                                bubble.className = 'skill-bubble';
 
-                        // Adjust bubble size based on skill level, increase to account for long text
-                        bubble.style.width = `${skill.size * 20}px`;
-                        bubble.style.height = `${skill.size * 20}px`;
+                                // Adjust bubble size based on skill level, increase to account for long text
+                                bubble.style.width = `${skill.size * 20}px`;
+                                bubble.style.height = `${skill.size * 20}px`;
 
-                        // Create a span to wrap the text for better styling and layout
-                        const bubbleText = document.createElement('span');
-                        bubbleText.textContent = skill.name;
+                                // Color variation based on skill index
+                                const colors = [
+                                    "linear-gradient(135deg, #e74c3c, #c0392b)",
+                                    "linear-gradient(135deg, #3498db, #2980b9)",
+                                    "linear-gradient(135deg, #2ecc71, #27ae60)",
+                                    "linear-gradient(135deg, #f1c40f, #f39c12)",
+                                    "linear-gradient(135deg, #9b59b6, #8e44ad)",
+                                    "linear-gradient(135deg, #e67e22, #d35400)",
+                                    "linear-gradient(135deg, #1abc9c, #16a085)"
+                                ];
+                                const color = colors[index % colors.length];
+                                bubble.style.background = color;
 
-                        bubble.appendChild(bubbleText);
-                        bubble.onclick = () => showSkillDetails(skill);
-                        bubblesContainer.appendChild(bubble);
+                                // Position the bubble randomly within a range to avoid aligning on one line
+                                bubble.style.left = `${10 + (index * 15) % 70}%`;
+                                bubble.style.top = `${10 + (index * 20) % 70}%`;
+
+                                // Create a span to wrap the text for better styling and layout
+                                const bubbleText = document.createElement('span');
+                                bubbleText.textContent = skill.name;
+
+                                bubble.appendChild(bubbleText);
+                                bubble.onclick = () => showSkillDetails(skill, color);
+                                bubblesContainer.appendChild(bubble);
+                            });
+                            gridContainer.style.display = 'block'; // Show the grid container after adding bubbles
+                        } else {
+                            console.error("Bubbles container not found.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to load skills:', error);
+                        const validationMessage = document.getElementById('validationMessage');
+                        validationMessage.textContent = 'Failed to load skills. Please try again later.';
+                        validationMessage.style.color = '#ff0000';
                     });
-
-                    document.getElementById('validationMessage').textContent = 'Skills loaded successfully!';
-                } else {
-                    console.error("Bubbles container not found.");
-                }
             }
 
-            function showSkillDetails(skill) {
+            window.showSkillDetails = function(skill, color) {
                 console.log("Showing details for:", skill.name);
-                const bubblesContainer = document.getElementById('bubblesContainer');
+                const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
 
-                if (bubblesContainer && skillBanner && skillDetails) {
-                    bubblesContainer.style.display = 'none';
+                if (gridContainer && skillBanner && skillDetails) {
+                    gridContainer.style.display = 'none'; // Hide the grid container
                     skillBanner.style.display = 'flex';
                     skillBanner.style.top = '0';
-                    document.getElementById('skillBannerName').textContent = skill.name;
+                    skillBanner.style.opacity = '1';
+                    skillBanner.style.background = color; // Set banner background to match the skill bubble color
+                    document.getElementById('skillBannerName').textContent = skill.fullName || skill.name; // Display full name if available
                     skillDetails.style.display = 'block';
                     skillDetails.style.opacity = '1';
                     skillDetails.innerHTML = `${skill.description}<br><br>`;
@@ -162,19 +175,20 @@
                 }
             }
 
-            function hideSkillDetails() {
+            window.hideSkillDetails = function() {
                 console.log("Hiding skill details...");
-                const bubblesContainer = document.getElementById('bubblesContainer');
+                const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
 
-                if (bubblesContainer && skillBanner && skillDetails) {
-                    skillBanner.style.top = '-100px';
+                if (gridContainer && skillBanner && skillDetails) {
                     skillDetails.style.opacity = '0';
+                    skillBanner.style.opacity = '0';
                     setTimeout(() => {
                         skillBanner.style.display = 'none';
                         skillDetails.style.display = 'none';
-                        bubblesContainer.style.display = 'flex';
+                        gridContainer.style.display = 'block'; // Show the grid container again
+                        skillBanner.style.top = '-100px'; // Reset the banner position for next use
                     }, 600);
                 } else {
                     console.error("One or more elements for hiding skill details not found.");
@@ -184,6 +198,5 @@
             loadSkills();
         });
     </script>
-
 </body>
 </html>
