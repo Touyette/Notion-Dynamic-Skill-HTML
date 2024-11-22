@@ -6,7 +6,12 @@
     },
     {
         "name": "Web Development",
+        "size": 2,
+        "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."    
+    },
+    {
+        "name": "UX",
         "size": 8,
-        "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."
+        "description": "UX"
     }
 ]
