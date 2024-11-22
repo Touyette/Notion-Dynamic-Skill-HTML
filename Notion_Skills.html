@@ -82,80 +82,83 @@
     <div id="validationMessage" class="validation-message"></div>
 
     <script>
-        const skillsData = [
-            {
-                "name": "AI",
-                "size": 10,
-                "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
-            },
-            {
-                "name": "Web Development",
-                "size": 2,
-                "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."
-            },
-            {
-                "name": "UX",
-                "size": 8,
-                "description": "UX"
-            }
-        ];
+        document.addEventListener("DOMContentLoaded", function() {
+            const skillsData = [
+                {
+                    "name": "AI",
+                    "size": 10,
+                    "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
+                },
+                {
+                    "name": "Web Development",
+                    "size": 2,
+                    "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."
+                },
+                {
+                    "name": "UX",
+                    "size": 8,
+                    "description": "UX"
+                }
+            ];
 
-        function loadSkills() {
-            try {
+            function loadSkills() {
+                try {
+                    const bubblesContainer = document.getElementById('bubblesContainer');
+                    bubblesContainer.style.display = 'flex';
+                    bubblesContainer.style.flexWrap = 'wrap';
+                    bubblesContainer.style.justifyContent = 'center';
+                    bubblesContainer.style.alignItems = 'center';
+                    bubblesContainer.style.height = '100vh';
+
+                    skillsData.forEach(skill => {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'skill-bubble';
+                        bubble.style.width = `${skill.size * 15}px`;
+                        bubble.style.height = `${skill.size * 15}px`;
+                        bubble.textContent = skill.name;
+                        bubble.onclick = () => showSkillDetails(skill);
+                        bubblesContainer.appendChild(bubble);
+                    });
+
+                    document.getElementById('validationMessage').textContent = 'Skills loaded successfully!';
+                } catch (error) {
+                    console.error('Failed to load skills:', error);
+                    document.getElementById('validationMessage').textContent = 'Failed to load skills. Please try again later.';
+                    document.getElementById('validationMessage').style.color = '#ff0000';
+                }
+            }
+
+            function showSkillDetails(skill) {
                 const bubblesContainer = document.getElementById('bubblesContainer');
-                bubblesContainer.style.display = 'flex';
-                bubblesContainer.style.flexWrap = 'wrap';
-                bubblesContainer.style.justifyContent = 'center';
-                bubblesContainer.style.alignItems = 'center';
-                bubblesContainer.style.height = '100vh';
+                const skillBanner = document.getElementById('skillBanner');
+                const skillDetails = document.getElementById('skillDetails');
 
-                skillsData.forEach(skill => {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'skill-bubble';
-                    bubble.style.width = `${skill.size * 15}px`;
-                    bubble.style.height = `${skill.size * 15}px`;
-                    bubble.textContent = skill.name;
-                    bubble.onclick = () => showSkillDetails(skill);
-                    bubblesContainer.appendChild(bubble);
-                });
-
-                document.getElementById('validationMessage').textContent = 'Skills loaded successfully!';
-            } catch (error) {
-                console.error('Failed to load skills:', error);
-                document.getElementById('validationMessage').textContent = 'Failed to load skills. Please try again later.';
-                document.getElementById('validationMessage').style.color = '#ff0000';
+                bubblesContainer.style.display = 'none';
+                skillBanner.style.display = 'flex';
+                skillBanner.style.top = '0';
+                document.getElementById('skillBannerName').textContent = skill.name;
+                skillDetails.style.display = 'block';
+                skillDetails.style.opacity = '1';
+                skillDetails.innerHTML = `${skill.description}<br><br>`;
             }
-        }
 
-        function showSkillDetails(skill) {
-            const bubblesContainer = document.getElementById('bubblesContainer');
-            const skillBanner = document.getElementById('skillBanner');
-            const skillDetails = document.getElementById('skillDetails');
+            function hideSkillDetails() {
+                const bubblesContainer = document.getElementById('bubblesContainer');
+                const skillBanner = document.getElementById('skillBanner');
+                const skillDetails = document.getElementById('skillDetails');
 
-            bubblesContainer.style.display = 'none';
-            skillBanner.style.display = 'flex';
-            skillBanner.style.top = '0';
-            document.getElementById('skillBannerName').textContent = skill.name;
-            skillDetails.style.display = 'block';
-            skillDetails.style.opacity = '1';
-            skillDetails.innerHTML = `${skill.description}<br><br>`;
-        }
+                skillBanner.style.top = '-100px';
+                skillDetails.style.opacity = '0';
+                setTimeout(() => {
+                    skillBanner.style.display = 'none';
+                    skillDetails.style.display = 'none';
+                    bubblesContainer.style.display = 'flex';
+                }, 600);
+            }
 
-        function hideSkillDetails() {
-            const bubblesContainer = document.getElementById('bubblesContainer');
-            const skillBanner = document.getElementById('skillBanner');
-            const skillDetails = document.getElementById('skillDetails');
-
-            skillBanner.style.top = '-100px';
-            skillDetails.style.opacity = '0';
-            setTimeout(() => {
-                skillBanner.style.display = 'none';
-                skillDetails.style.display = 'none';
-                bubblesContainer.style.display = 'flex';
-            }, 600);
-        }
-
-        loadSkills();
+            loadSkills();
+        });
     </script>
+
 </body>
 </html>
