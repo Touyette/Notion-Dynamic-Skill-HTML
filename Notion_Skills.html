@@ -10,7 +10,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             height: 100vh;
-            overflow: hidden;
+            overflow: auto;
         }
         #gridContainer {
             position: relative;
@@ -75,16 +75,46 @@
             margin-top: 20px;
             font-size: 18px;
             opacity: 0;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
         .video-player {
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
         }
         .video-player video {
-            width: 80%;
-            max-width: 800px;
+            width: 40%;
+            max-height: 500px;
             border: 2px solid #ffffff;
+        }
+        .projects {
+            margin-top: 20px;
+            text-align: left;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .projects h3 {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        .project-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #2a2a2a;
+        }
+        .project-item h4 {
+            color: #3498db;
+            font-weight: bold;
+            margin: 0;
+        }
+        .project-item p {
+            color: #ddd;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -99,7 +129,7 @@
     </div>
 
     <div class="details" id="skillDetails"></div>
-    <div class="video-player" id="videoPlayerContainer"></div>
+    <div class="projects" id="projectsContainer"></div>
     <div id="validationMessage" class="validation-message"></div>
 
     <script>
@@ -173,32 +203,59 @@
                 const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
-                const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+                const projectsContainer = document.getElementById('projectsContainer');
 
-                if (gridContainer && skillBanner && skillDetails && videoPlayerContainer) {
-                    gridContainer.style.display = 'none'; // Hide the grid container
+                if (gridContainer && skillBanner && skillDetails && projectsContainer) {
+                    gridContainer.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+                    gridContainer.style.transform = 'scale(0.8)';
+                    gridContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        gridContainer.style.display = 'none';
+                    }, 600);
+
                     skillBanner.style.display = 'flex';
-                    skillBanner.style.top = '0';
+                    skillBanner.style.top = '5vh';
                     skillBanner.style.opacity = '1';
-                    skillBanner.style.background = color; // Set banner background to match the skill bubble color
-                    document.getElementById('skillBannerName').textContent = skill.fullName || skill.name; // Display full name if available
+                    skillBanner.style.transform = 'scale(0.8)';
+                    skillBanner.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+                    setTimeout(() => {
+                        skillBanner.style.transform = 'scale(1)';
+                    }, 100);
+                    skillBanner.style.background = color;
+                    document.getElementById('skillBannerName').textContent = skill.fullName || skill.name;
+
                     skillDetails.style.display = 'block';
                     skillDetails.style.opacity = '1';
-                    skillDetails.innerHTML = `${skill.description}<br><br>`;
+                    skillDetails.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        skillDetails.style.transform = 'scale(1)';
+                    }, 100);
 
-                    // Add video player if the skill has a video property
-                    if (skill.videoUrl) {
-                        videoPlayerContainer.innerHTML = `
-                            <h3>${skill.fullName || skill.name} Demo Video</h3>
-                            <video controls>
-                                <source src="${skill.videoUrl}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        `;
-                        videoPlayerContainer.style.display = 'block';
+                    if (skill.projects && skill.projects.length > 0) {
+                        let projectsHTML = `<h3>Projects:</h3>`;
+                        skill.projects.forEach((project, index) => {
+                            const projectUrl = project.url;
+                            projectsHTML += `
+                                <div class="project-item">
+                                    <h4>${project.title}</h4>
+                                    <p>${project.description}</p>
+                                    <video controls style="display: block; margin: 0 auto; max-height: 500px;">
+                                        <source src="${projectUrl}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            `;
+                        });
+                        projectsContainer.innerHTML = projectsHTML;
+                        projectsContainer.style.display = 'block';
+                        projectsContainer.style.opacity = '1';
+                        projectsContainer.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            projectsContainer.style.transform = 'scale(1)';
+                        }, 100);
                     } else {
-                        videoPlayerContainer.innerHTML = '';
-                        videoPlayerContainer.style.display = 'none';
+                        projectsContainer.innerHTML = '';
+                        projectsContainer.style.display = 'none';
                     }
                 } else {
                     console.error("One or more elements for displaying skill details not found.");
@@ -210,18 +267,20 @@
                 const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
-                const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+                const projectsContainer = document.getElementById('projectsContainer');
 
-                if (gridContainer && skillBanner && skillDetails && videoPlayerContainer) {
+                if (gridContainer && skillBanner && skillDetails && projectsContainer) {
                     skillDetails.style.opacity = '0';
                     skillBanner.style.opacity = '0';
-                    videoPlayerContainer.style.opacity = '0';
+                    projectsContainer.style.opacity = '0';
                     setTimeout(() => {
                         skillBanner.style.display = 'none';
                         skillDetails.style.display = 'none';
-                        videoPlayerContainer.style.display = 'none';
-                        gridContainer.style.display = 'block'; // Show the grid container again
-                        skillBanner.style.top = '-100px'; // Reset the banner position for next use
+                        projectsContainer.style.display = 'none';
+                        gridContainer.style.display = 'block';
+                        gridContainer.style.transform = 'scale(1)';
+                        gridContainer.style.opacity = '1';
+                        skillBanner.style.top = '0';
                     }, 600);
                 } else {
                     console.error("One or more elements for hiding skill details not found.");
