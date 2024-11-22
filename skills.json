@@ -1,0 +1,12 @@
+[
+    {
+        "name": "AI",
+        "size": 10,
+        "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
+    },
+    {
+        "name": "Web Development",
+        "size": 8,
+        "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks.",
+    }
+]
