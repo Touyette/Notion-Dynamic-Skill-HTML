@@ -77,6 +77,15 @@
             opacity: 0;
             transition: opacity 0.6s ease;
         }
+        .video-player {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .video-player video {
+            width: 80%;
+            max-width: 800px;
+            border: 2px solid #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +99,7 @@
     </div>
 
     <div class="details" id="skillDetails"></div>
+    <div class="video-player" id="videoPlayerContainer"></div>
     <div id="validationMessage" class="validation-message"></div>
 
     <script>
@@ -163,8 +173,9 @@
                 const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
+                const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
-                if (gridContainer && skillBanner && skillDetails) {
+                if (gridContainer && skillBanner && skillDetails && videoPlayerContainer) {
                     gridContainer.style.display = 'none'; // Hide the grid container
                     skillBanner.style.display = 'flex';
                     skillBanner.style.top = '0';
@@ -174,6 +185,21 @@
                     skillDetails.style.display = 'block';
                     skillDetails.style.opacity = '1';
                     skillDetails.innerHTML = `${skill.description}<br><br>`;
+
+                    // Add video player if the skill has a video property
+                    if (skill.videoUrl) {
+                        videoPlayerContainer.innerHTML = `
+                            <h3>${skill.fullName || skill.name} Demo Video</h3>
+                            <video controls>
+                                <source src="${skill.videoUrl}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                        videoPlayerContainer.style.display = 'block';
+                    } else {
+                        videoPlayerContainer.innerHTML = '';
+                        videoPlayerContainer.style.display = 'none';
+                    }
                 } else {
                     console.error("One or more elements for displaying skill details not found.");
                 }
@@ -184,13 +210,16 @@
                 const gridContainer = document.getElementById('gridContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
+                const videoPlayerContainer = document.getElementById('videoPlayerContainer');
 
-                if (gridContainer && skillBanner && skillDetails) {
+                if (gridContainer && skillBanner && skillDetails && videoPlayerContainer) {
                     skillDetails.style.opacity = '0';
                     skillBanner.style.opacity = '0';
+                    videoPlayerContainer.style.opacity = '0';
                     setTimeout(() => {
                         skillBanner.style.display = 'none';
                         skillDetails.style.display = 'none';
+                        videoPlayerContainer.style.display = 'none';
                         gridContainer.style.display = 'block'; // Show the grid container again
                         skillBanner.style.top = '-100px'; // Reset the banner position for next use
                     }, 600);
