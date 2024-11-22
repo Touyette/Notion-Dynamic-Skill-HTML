@@ -83,6 +83,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            console.log("DOM fully loaded and parsed");
+
             const skillsData = [
                 {
                     "name": "AI",
@@ -102,8 +104,11 @@
             ];
 
             function loadSkills() {
-                try {
-                    const bubblesContainer = document.getElementById('bubblesContainer');
+                console.log("Loading skills...");
+                const bubblesContainer = document.getElementById('bubblesContainer');
+                console.log("Bubbles container found:", !!bubblesContainer);
+                
+                if (bubblesContainer) {
                     bubblesContainer.style.display = 'flex';
                     bubblesContainer.style.flexWrap = 'wrap';
                     bubblesContainer.style.justifyContent = 'center';
@@ -111,6 +116,7 @@
                     bubblesContainer.style.height = '100vh';
 
                     skillsData.forEach(skill => {
+                        console.log("Adding skill:", skill.name);
                         const bubble = document.createElement('div');
                         bubble.className = 'skill-bubble';
                         bubble.style.width = `${skill.size * 15}px`;
@@ -121,44 +127,51 @@
                     });
 
                     document.getElementById('validationMessage').textContent = 'Skills loaded successfully!';
-                } catch (error) {
-                    console.error('Failed to load skills:', error);
-                    document.getElementById('validationMessage').textContent = 'Failed to load skills. Please try again later.';
-                    document.getElementById('validationMessage').style.color = '#ff0000';
+                } else {
+                    console.error("Bubbles container not found.");
                 }
             }
 
             function showSkillDetails(skill) {
+                console.log("Showing details for:", skill.name);
                 const bubblesContainer = document.getElementById('bubblesContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
 
-                bubblesContainer.style.display = 'none';
-                skillBanner.style.display = 'flex';
-                skillBanner.style.top = '0';
-                document.getElementById('skillBannerName').textContent = skill.name;
-                skillDetails.style.display = 'block';
-                skillDetails.style.opacity = '1';
-                skillDetails.innerHTML = `${skill.description}<br><br>`;
+                if (bubblesContainer && skillBanner && skillDetails) {
+                    bubblesContainer.style.display = 'none';
+                    skillBanner.style.display = 'flex';
+                    skillBanner.style.top = '0';
+                    document.getElementById('skillBannerName').textContent = skill.name;
+                    skillDetails.style.display = 'block';
+                    skillDetails.style.opacity = '1';
+                    skillDetails.innerHTML = `${skill.description}<br><br>`;
+                } else {
+                    console.error("One or more elements for displaying skill details not found.");
+                }
             }
 
             function hideSkillDetails() {
+                console.log("Hiding skill details...");
                 const bubblesContainer = document.getElementById('bubblesContainer');
                 const skillBanner = document.getElementById('skillBanner');
                 const skillDetails = document.getElementById('skillDetails');
 
-                skillBanner.style.top = '-100px';
-                skillDetails.style.opacity = '0';
-                setTimeout(() => {
-                    skillBanner.style.display = 'none';
-                    skillDetails.style.display = 'none';
-                    bubblesContainer.style.display = 'flex';
-                }, 600);
+                if (bubblesContainer && skillBanner && skillDetails) {
+                    skillBanner.style.top = '-100px';
+                    skillDetails.style.opacity = '0';
+                    setTimeout(() => {
+                        skillBanner.style.display = 'none';
+                        skillDetails.style.display = 'none';
+                        bubblesContainer.style.display = 'flex';
+                    }, 600);
+                } else {
+                    console.error("One or more elements for hiding skill details not found.");
+                }
             }
 
             loadSkills();
         });
     </script>
-
 </body>
 </html>
