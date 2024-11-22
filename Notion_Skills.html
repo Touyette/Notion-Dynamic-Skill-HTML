@@ -82,14 +82,26 @@
     <div id="validationMessage" class="validation-message"></div>
 
     <script>
-        async function loadSkills() {
-            try {
-                const response = await fetch('skills.json');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const skills = await response.json();
+        const skillsData = [
+            {
+                "name": "AI",
+                "size": 10,
+                "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights."
+            },
+            {
+                "name": "Web Development",
+                "size": 2,
+                "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."
+            },
+            {
+                "name": "UX",
+                "size": 8,
+                "description": "UX"
+            }
+        ];
 
+        function loadSkills() {
+            try {
                 const bubblesContainer = document.getElementById('bubblesContainer');
                 bubblesContainer.style.display = 'flex';
                 bubblesContainer.style.flexWrap = 'wrap';
@@ -97,7 +109,7 @@
                 bubblesContainer.style.alignItems = 'center';
                 bubblesContainer.style.height = '100vh';
 
-                skills.forEach(skill => {
+                skillsData.forEach(skill => {
                     const bubble = document.createElement('div');
                     bubble.className = 'skill-bubble';
                     bubble.style.width = `${skill.size * 15}px`;
@@ -110,6 +122,8 @@
                 document.getElementById('validationMessage').textContent = 'Skills loaded successfully!';
             } catch (error) {
                 console.error('Failed to load skills:', error);
+                document.getElementById('validationMessage').textContent = 'Failed to load skills. Please try again later.';
+                document.getElementById('validationMessage').style.color = '#ff0000';
             }
         }
 
@@ -125,15 +139,6 @@
             skillDetails.style.display = 'block';
             skillDetails.style.opacity = '1';
             skillDetails.innerHTML = `${skill.description}<br><br>`;
-
-            skill.videos.forEach(video => {
-                const videoLink = document.createElement('a');
-                videoLink.href = `videos/${video}`;
-                videoLink.textContent = `Watch ${video}`;
-                videoLink.style.display = 'block';
-                videoLink.style.color = '#3498db';
-                skillDetails.appendChild(videoLink);
-            });
         }
 
         function hideSkillDetails() {
