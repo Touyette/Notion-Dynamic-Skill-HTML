@@ -13,6 +13,8 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            transition: all 0.5s ease;
+            flex-direction: column;
         }
         .skill-bubble {
             width: 150px;
@@ -33,16 +35,55 @@
             transform: scale(1.1);
             box-shadow: 0 0 30px rgba(52, 152, 219, 0.8);
         }
+        .banner {
+            width: 100%;
+            height: 100px;
+            background-color: #3498db;
+            color: #ffffff;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .banner .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .details {
+            display: none;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <div class="skill-bubble" onclick="showSkillDetails()">
         AI
     </div>
+    
+    <div class="banner" id="skillBanner">
+        <span class="back-arrow" onclick="hideSkillDetails()">&#8592; Back</span>
+        <span>AI</span>
+    </div>
+
+    <div class="details" id="skillDetails">
+        AI: I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights.
+    </div>
 
     <script>
         function showSkillDetails() {
-            alert("AI: I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights.");
+            document.querySelector('.skill-bubble').style.display = 'none';
+            document.getElementById('skillBanner').style.display = 'flex';
+            document.getElementById('skillDetails').style.display = 'block';
+        }
+
+        function hideSkillDetails() {
+            document.querySelector('.skill-bubble').style.display = 'flex';
+            document.getElementById('skillBanner').style.display = 'none';
+            document.getElementById('skillDetails').style.display = 'none';
         }
     </script>
 </body>
