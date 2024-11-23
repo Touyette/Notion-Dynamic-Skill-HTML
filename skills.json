@@ -3,8 +3,8 @@
     {
         "name": "AI",
         "fullName": "Artificial Intelligence",
-        "size": 10,
-        "description": "I have experience with a variety of AI techniques including natural language processing, machine learning, and deep learning. I've worked on projects such as chatbots, predictive models, and data-driven insights.",
+        "size": 8,
+        "description": "TBC",
         "projects": [
             {
                 "title": "AI Chatbot Example",
@@ -14,32 +14,59 @@
         ]
     },
     {
-        "name": "Web Dev",
-        "fullName": "Web Development",
-        "size": 2,
-        "description": "Experience in building responsive web applications using HTML, CSS, JavaScript, and various frameworks."    
+        "name": "Python",
+        "fullName": "Python Programming",
+        "size": 4,
+        "description": "Experience with basic Python programming concepts, including data structures, functions, and object-oriented programming. I've also have some knowledge with AI Python libraries for such as Tensorflow, Pandas or langchain. An AI engineer will still be more efficient, but I sure can understand his issues."    
+    },
+    {
+        "name": "Prompt Engineering",
+        "fullName": "Prompt Engineering for genAI applications ",
+        "size": 10,
+        "description": "I've managed a few projects involving crafting and refining prompts for genAI for my last internship, on top of following Prompt Engineering classes at Coursera. I've also been limit testing the models (mostly OpenAI ones) with almost every task that has been assigned to me since Novemeber 2022"    
     },
     {
         "name": "ML",
         "fullName": "Machine Learning",
-        "size": 4,
-        "description": "I've studied a lot of the ML techniques that data scientists and AI engineers learn."
-    },
+        "size": 6,
+        "description": "To complete my cursus, I wanted to dig deeper on the technical side of AI, particalarly what has been done before the Transformers/genAI revolution. To do so, I spent 20-25h studying a handbook of AI's: 'Artificial Intelligence: A Modern Approach', recommeded to me by Thomas Winters (Post-Doctoral Researcher at KU Leuven, CS department). I've used this time to complete a hadnful of projects to apply what I've learned. Again the idea is to be able to understand a Data Scientist/AI engineer perspective, not replace them."    },
     {
         "name": "2nd Brain",
         "fullName": "Second Brain in Obsidian",
         "size": 7,
-        "description": "I gather all the knowledge I have in a second brain in Obsidian."
+        "description": "I trying to gather all the knowledge I've gatherred so far in 'second brain' in Obsidian. I've always been interested in gathering everything in one place "
     },
     {
         "name": "UX",
-        "fullName": "User Experience Design",
+        "fullName": "User Experience Research/Design ",
         "size": 8,
-        "description": "Extensive experience in UX design, including user research, prototyping, and creating intuitive user interfaces."
+        "description": "UX is an important aspect of my master degree. I've been a UX leader, as one of my 3 roles in my stay at Procter&Gamble, and I've worked fully as a UX designer/researcher at Pixminds. I have a strong understanding of the key concepts of UX and how to apply them."
     }, 
     {"name": "Research Methodology",
     "fullName": "Research Methodology",
     "size": 8,
-    "description": "I have experience with a variety of research methodologies, including experiment design, data collection, and data analysis, often focusing on "
+    "description": "I developed strong research methodology skills during my Master’s in Cognitive Science, particularly through my master’s thesis, where I learn to do a litterature review, develop a testing protocol, as well as experiment design. Overall I have a good understanding of the research process, and where to find information in the scientific literature."
+    },
+    {"name": "Cognitive science & Neurosciences",
+    "fullName": "Cognitive science knowledge and methodology",
+    "size": 8,
+    "description": "From my bachelor in psychology and my master degree, I've aquired strong knowledge in the functions of the brain, its neuroanatamy and its liminations."
+    },
+    {"name": "Soft Skills",
+    "fullName": "Soft Skills",
+    "size":     9,
+    "description": "Coming both from my personality and training in psychology. I've developed strong interpersonal skills, such as active listening, empathy and caring. I'm still learning to better communicate (but honestly, who shouldn't ?). I'm also a teamplayer, I'll raise a concern if I believe the team overlooked it, and I can let go of my opinion if the team agree on another one.  Overall, the team success matters more than my own."
+    }
+    ,
+    {"name": "Stats Data analysis",
+    "fullName": "TBC",
+    "size":     9,
+    "description": "TBC"
+    },
+    {"name": "KMS - knowledge management system",
+    "fullName": "TBC",
+    "size":     9,
+    "description": "TBC"
     }
 ]
+
