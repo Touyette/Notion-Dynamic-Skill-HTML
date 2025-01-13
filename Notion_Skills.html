@@ -1,294 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Skills Page</title>
-    <style>
-        body {
-            background-color: #1a1a1a;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: auto;
-        }
-        #gridContainer {
-            position: relative;
-            width: 90vw;
-            height: 90vh;
-            margin: auto;
-            margin-top: 5vh;
-            background-color: #333;
-            border: 2px solid #444;
-            display: none; /* Initially hidden */
-        }
-        .skill-bubble {
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #ffffff;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            position: absolute;
-            transition: transform 0.6s ease, box-shadow 0.6s ease, left 0.6s ease, top 0.6s ease;
-            overflow: hidden;
-        }
-        .skill-bubble span {
-            padding: 5px;
-            font-size: 16px;
-            word-wrap: break-word;
-        }
-        .skill-bubble:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
-        }
-        .banner {
-            width: 100%;
-            height: 100px;
-            color: #ffffff;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-            position: relative;
-            top: -100px;
-            transition: top 0.6s ease, opacity 0.6s ease;
-            opacity: 0;
-        }
-        .banner .back-arrow {
-            position: absolute;
-            left: 20px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .banner #skillBannerName {
-            font-size: 36px;
-            font-weight: bold;
-        }
-        .details {
-            display: none;
-            color: #ffffff;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-            opacity: 0;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .video-player {
-            margin-top: 10px;
-            text-align: center;
-        }
-        .video-player video {
-            width: 40%;
-            max-height: 500px;
-            border: 2px solid #ffffff;
-        }
-        .projects {
-            margin-top: 20px;
-            text-align: left;
-            padding: 20px;
-            background-color: #222;
-            border-radius: 8px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .projects h3 {
-            color: #f1c40f;
-            font-weight: bold;
-        }
-        .project-item {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #444;
-            border-radius: 5px;
-            background-color: #2a2a2a;
-        }
-        .project-item h4 {
-            color: #3498db;
-            font-weight: bold;
-            margin: 0;
-        }
-        .project-item p {
-            color: #ddd;
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>D3 Skill Map with Bounded Drag, Size Legend, and Closest Colors</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* The lighter gray zone where bubbles move */
+    #gridContainer {
+      position: relative;
+      width: 90vw;
+      height: 65vh;
+      margin-top: 3vh;
+      margin-bottom: 2vh;
+      background-color: #333;
+      border: 2px solid #444;
+      overflow: hidden; 
+    }
+
+    /* Legend container */
+    #legendContainer {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 2vh;
+    }
+
+    /* The skill bubbles in absolute positioning */
+    .skill-bubble {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .skill-bubble span {
+      padding: 4px;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    .skill-bubble:hover {
+      transform: scale(1.07);
+    }
+  </style>
 </head>
+
 <body>
-    <div id="gridContainer">
-        <div id="bubblesContainer"></div>
-    </div>
+  <!-- The container for the bubble layout -->
+  <div id="gridContainer"></div>
 
-    <div class="banner" id="skillBanner">
-        <span class="back-arrow" onclick="hideSkillDetails()">&#8592; Back</span>
-        <span id="skillBannerName"></span>
-    </div>
+  <!-- Legend container for size legend -->
+  <div id="legendContainer"></div>
 
-    <div class="details" id="skillDetails"></div>
-    <div class="projects" id="projectsContainer"></div>
-    <div id="validationMessage" class="validation-message"></div>
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("gridContainer");
+      const width = container.offsetWidth;
+      const height = container.offsetHeight;
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            console.log("DOM fully loaded and parsed");
+      // 1) Fetch data
+      fetch("skills.json")
+        .then(resp => resp.json())
+        .then(data => {
+          const { skills, relationships } = data;
 
-            function loadSkills() {
-                fetch('skills.json')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(skillsData => {
-                        console.log("Loading skills...");
-                        const bubblesContainer = document.getElementById('bubblesContainer');
-                        const gridContainer = document.getElementById('gridContainer');
-                        console.log("Bubbles container found:", !!bubblesContainer);
+          // Convert each skill into a node for D3
+          const nodes = skills.map(skill => ({
+            id: skill.name,
+            skill: skill,
+            radius: skill.size * 10
+          }));
 
-                        if (bubblesContainer) {
-                            skillsData.forEach((skill, index) => {
-                                console.log("Adding skill:", skill.name);
-                                const bubble = document.createElement('div');
-                                bubble.className = 'skill-bubble';
+          // Filter out empty source/target
+          const links = (relationships || [])
+            .filter(rel => rel.source && rel.target && rel.target !== "")
+            .map(rel => ({
+              source: rel.source,
+              target: rel.target,
+              distance: rel.distance || 80
+            }));
 
-                                // Adjust bubble size based on skill level, increase to account for long text
-                                bubble.style.width = `${skill.size * 20}px`;
-                                bubble.style.height = `${skill.size * 20}px`;
+          // 2) Create bubbles
+          const nodeElems = nodes.map(nodeData => {
+            const bubble = document.createElement("div");
+            bubble.className = "skill-bubble";
 
-                                // Color variation based on skill index
-                                const colors = [
-                                    "linear-gradient(135deg, #e74c3c, #c0392b)",
-                                    "linear-gradient(135deg, #3498db, #2980b9)",
-                                    "linear-gradient(135deg, #2ecc71, #27ae60)",
-                                    "linear-gradient(135deg, #f1c40f, #f39c12)",
-                                    "linear-gradient(135deg, #9b59b6, #8e44ad)",
-                                    "linear-gradient(135deg, #e67e22, #d35400)",
-                                    "linear-gradient(135deg, #1abc9c, #16a085)"
-                                ];
-                                const color = colors[index % colors.length];
-                                bubble.style.background = color;
+            // Temporarily color them all gray; final color is assigned after simulation ends
+            bubble.style.background = "#666";
 
-                                // Position the bubble randomly within a range to avoid aligning on one line
-                                bubble.style.left = `${10 + (index * 15) % 70}%`;
-                                bubble.style.top = `${10 + (index * 20) % 70}%`;
+            // Set diameter
+            const diameter = nodeData.radius * 2;
+            bubble.style.width = diameter + "px";
+            bubble.style.height = diameter + "px";
 
-                                // Create a span to wrap the text for better styling and layout
-                                const bubbleText = document.createElement('span');
-                                bubbleText.textContent = skill.name;
+            // Label
+            const span = document.createElement("span");
+            span.textContent = nodeData.skill.name;
+            bubble.appendChild(span);
 
-                                bubble.appendChild(bubbleText);
-                                bubble.onclick = () => showSkillDetails(skill, color);
-                                bubblesContainer.appendChild(bubble);
-                            });
-                            gridContainer.style.display = 'block'; // Show the grid container after adding bubbles
-                        } else {
-                            console.error("Bubbles container not found.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Failed to load skills:', error);
-                        const validationMessage = document.getElementById('validationMessage');
-                        validationMessage.textContent = 'Failed to load skills. Please try again later.';
-                        validationMessage.style.color = '#ff0000';
-                    });
-            }
+            // Add to DOM
+            container.appendChild(bubble);
 
-            window.showSkillDetails = function(skill, color) {
-                console.log("Showing details for:", skill.name);
-                const gridContainer = document.getElementById('gridContainer');
-                const skillBanner = document.getElementById('skillBanner');
-                const skillDetails = document.getElementById('skillDetails');
-                const projectsContainer = document.getElementById('projectsContainer');
+            // Add drag handling
+            d3.select(bubble)
+              .datum(nodeData)
+              .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded)
+              );
 
-                if (gridContainer && skillBanner && skillDetails && projectsContainer) {
-                    gridContainer.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-                    gridContainer.style.transform = 'scale(0.8)';
-                    gridContainer.style.opacity = '0';
-                    setTimeout(() => {
-                        gridContainer.style.display = 'none';
-                    }, 600);
+            // Example click
+            bubble.addEventListener("click", () => {
+              console.log("Clicked skill:", nodeData.skill.fullName);
+            });
 
-                    skillBanner.style.display = 'flex';
-                    skillBanner.style.top = '5vh';
-                    skillBanner.style.opacity = '1';
-                    skillBanner.style.transform = 'scale(0.8)';
-                    skillBanner.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-                    setTimeout(() => {
-                        skillBanner.style.transform = 'scale(1)';
-                    }, 100);
-                    skillBanner.style.background = color;
-                    document.getElementById('skillBannerName').textContent = skill.fullName || skill.name;
+            return { nodeData, htmlElem: bubble };
+          });
 
-                    skillDetails.style.display = 'block';
-                    skillDetails.style.opacity = '1';
-                    skillDetails.style.transform = 'scale(0.8)';
-                    setTimeout(() => {
-                        skillDetails.style.transform = 'scale(1)';
-                    }, 100);
+          // 3) Force simulation
+          const simulation = d3.forceSimulation(nodes)
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("charge", d3.forceManyBody().strength(10))
+            .force("collision", d3.forceCollide(d => d.radius + 3))
+            .force("link", d3.forceLink(links)
+              .id(d => d.id)
+              .distance(d => d.distance)
+            )
+            .on("tick", ticked)
+            .on("end", colorByProximity); // when the layout finishes, assign final colors
 
-                    if (skill.projects && skill.projects.length > 0) {
-                        let projectsHTML = `<h3>Projects:</h3>`;
-                        skill.projects.forEach((project, index) => {
-                            const projectUrl = project.url;
-                            projectsHTML += `
-                                <div class="project-item">
-                                    <h4>${project.title}</h4>
-                                    <p>${project.description}</p>
-                                    <video controls style="display: block; margin: 0 auto; max-height: 500px;">
-                                        <source src="${projectUrl}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            `;
-                        });
-                        projectsContainer.innerHTML = projectsHTML;
-                        projectsContainer.style.display = 'block';
-                        projectsContainer.style.opacity = '1';
-                        projectsContainer.style.transform = 'scale(0.8)';
-                        setTimeout(() => {
-                            projectsContainer.style.transform = 'scale(1)';
-                        }, 100);
-                    } else {
-                        projectsContainer.innerHTML = '';
-                        projectsContainer.style.display = 'none';
-                    }
-                } else {
-                    console.error("One or more elements for displaying skill details not found.");
-                }
-            }
+          function ticked() {
+            nodeElems.forEach(({ nodeData, htmlElem }) => {
+              let x = nodeData.x;
+              let y = nodeData.y;
 
-            window.hideSkillDetails = function() {
-                console.log("Hiding skill details...");
-                const gridContainer = document.getElementById('gridContainer');
-                const skillBanner = document.getElementById('skillBanner');
-                const skillDetails = document.getElementById('skillDetails');
-                const projectsContainer = document.getElementById('projectsContainer');
+              if (x == null) x = width / 2;
+              if (y == null) y = height / 2;
 
-                if (gridContainer && skillBanner && skillDetails && projectsContainer) {
-                    skillDetails.style.opacity = '0';
-                    skillBanner.style.opacity = '0';
-                    projectsContainer.style.opacity = '0';
-                    setTimeout(() => {
-                        skillBanner.style.display = 'none';
-                        skillDetails.style.display = 'none';
-                        projectsContainer.style.display = 'none';
-                        gridContainer.style.display = 'block';
-                        gridContainer.style.transform = 'scale(1)';
-                        gridContainer.style.opacity = '1';
-                        skillBanner.style.top = '0';
-                    }, 600);
-                } else {
-                    console.error("One or more elements for hiding skill details not found.");
-                }
-            }
+              // clamp to container
+              x = Math.max(nodeData.radius, Math.min(width - nodeData.radius, x));
+              y = Math.max(nodeData.radius, Math.min(height - nodeData.radius, y));
 
-            loadSkills();
+              nodeData.x = x;
+              nodeData.y = y;
+
+              htmlElem.style.left = (x - nodeData.radius) + "px";
+              htmlElem.style.top  = (y - nodeData.radius) + "px";
+            });
+          }
+
+          // 4) Drag handlers
+          function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+          }
+          function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+          }
+          function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+          }
+
+          // 5) Build bubble size legend
+          buildBubbleLegend(skills);
+
+          // 6) Assign final colors after layout ends
+          function colorByProximity() {
+            // Sort nodes by final x-position
+            // So physically closer in x => closer color
+            const sortedNodes = [...nodes].sort((a, b) => a.x - b.x);
+
+            // We'll use a continuous color scale from 0..1 -> rainbow
+            const n = sortedNodes.length;
+            sortedNodes.forEach((nData, i) => {
+              const frac = n === 1 ? 0.5 : i / (n - 1); 
+              const color = d3.interpolateRainbow(frac);
+              // Update that node's bubble color
+              const bubbleObj = nodeElems.find(e => e.nodeData === nData);
+              if (bubbleObj) {
+                bubbleObj.htmlElem.style.background = color;
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.error("Failed to load skills.json:", err);
         });
-    </script>
+
+      // Build bubble-size legend "like your example"
+      function buildBubbleLegend(skills) {
+        // We'll append an SVG in #legendContainer
+        const legendW = 240, legendH = 180;
+        const svg = d3.select("#legendContainer")
+          .append("svg")
+          .attr("width", legendW)
+          .attr("height", legendH);
+
+        // Identify min & max "size" from skills
+        const minS = d3.min(skills, d => d.size);
+        const maxS = d3.max(skills, d => d.size);
+
+        // d3 scale for radius in legend
+        const sizeScale = d3.scaleSqrt()
+          .domain([minS, maxS])
+          .range([10, 45]); // adjust to taste
+
+        // We'll pick 3 example values between minS and maxS
+        const exampleSizes = [minS, (minS+maxS)/2, maxS].map(Math.round);
+
+        // Position for circles in the legend
+        const xCircle = 60;
+        const yCircle = 120;
+        const xLabel = 120;
+
+        // circles
+        svg
+          .selectAll("legendCircles")
+          .data(exampleSizes)
+          .enter()
+          .append("circle")
+            .attr("cx", xCircle)
+            .attr("cy", d => yCircle - sizeScale(d))
+            .attr("r", d => sizeScale(d))
+            .style("fill", "none")
+            .style("stroke", "black");
+
+        // dashed lines
+        svg
+          .selectAll("legendLines")
+          .data(exampleSizes)
+          .enter()
+          .append("line")
+            .attr("x1", d => xCircle + sizeScale(d))
+            .attr("x2", xLabel)
+            .attr("y1", d => yCircle - sizeScale(d))
+            .attr("y2", d => yCircle - sizeScale(d))
+            .style("stroke", "black")
+            .style("stroke-dasharray", ("2,2"));
+
+        // labels
+        svg
+          .selectAll("legendLabels")
+          .data(exampleSizes)
+          .enter()
+          .append("text")
+            .attr("x", xLabel + 4)
+            .attr("y", d => yCircle - sizeScale(d))
+            .text(d => `Size = ${d}`)
+            .style("font-size", 12)
+            .attr("alignment-baseline", "middle");
+
+        // optional title
+        svg
+          .append("text")
+            .attr("x", xCircle - 10)
+            .attr("y", yCircle - 60)
+            .text("Bubble Size Legend")
+            .style("font-size", 14)
+            .style("font-weight", "bold");
+      }
+    });
+  </script>
 </body>
 </html>
