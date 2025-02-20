@@ -50,24 +50,30 @@
       ]
     },
     {
-      "name": "Machine Learning",
-      "fullName": "Machine Learning",
-      "size": 6,
+      "name": "AI",
+      "fullName": "Artificial Intelligence",
+      "size": 9,
       "content": [
         {
-          "type": "paragraph",
-          "text": "To complete my cursus, I wanted to dig deeper on the historical side of AI, particularly what has been done before the Transformers/genAI revolution. To do so, I spent 20-25h studying a handbook of AI's: 'Artificial Intelligence: A Modern Approach'. I've used this time to complete a handful of projects to apply what I've learned."
-        }
-      ]
-    },
-    {
-      "name": "Deep Learning",
-      "fullName": "Deep Learning",
-      "size": 8,
-      "content": [
+          "type": "heading",
+          "text": "Machine Learning"
+        },
         {
           "type": "paragraph",
-          "text": "In my studies and internships I learned to code basic deep learning AIs such as a cat/dog classifier (CNN), a benign / malignant breast tumors classifier (FNN) and a mouse movement predicter (1DCNN)"
+          "text": "To complete my cursus, I wanted to dig deeper on the historical side of AI, particularly what has been done before the Transformers/genAI revolution. I spent 20-25h studying 'Artificial Intelligence: A Modern Approach' and completed projects applying what I learned."
+        },
+        {
+          "type": "image",
+          "src": "Projects Data/Artificial Intelligence A Modern Approach.png",
+          "description": "Cover of 'Artificial Intelligence: A Modern Approach', used in my study projects."
+        },
+        {
+          "type": "heading",
+          "text": "Deep Learning"
+        },
+        {
+          "type": "paragraph",
+          "text": "In my studies and internships, I learned to code basic deep learning AIs such as a cat/dog classifier (CNN), a benign/malignant breast tumor classifier (FNN), and a mouse movement predictor (1D CNN)."
         }
       ]
     },
@@ -83,8 +89,8 @@
       ]
     },
     {
-      "name": "Knowledge System",
-      "fullName": "Knowledge Management System",
+      "name": "Knowledge systems",
+      "fullName": "Knowledge Management systems",
       "size": 9,
       "content": [
         {
@@ -93,7 +99,12 @@
         },
         {
           "type": "paragraph",
-          "text": "I've also been gathering all the knowledge I've gathered so far in a 'second brain' in Obsidian, a sofware for note taking that allows links and graphs visualization.<br/>I've also been checking how we can apply genAI to such a database, for either creation of new data, or recollection of existant material.  "
+          "text": "I've also been gathering all the knowledge I've gathered so far in a 'second brain' in Obsidian, a sofware for note taking that allows links and graphs visualization.<br/>I've also been checking how we can apply genAI to such a database, for either creation of new data, or recollection of existant material."
+        },
+        {
+          "type": "image",
+          "src": "Projects Data/ObsidianGraph.png",
+          "description": "My Obsidian knowledge graph (02/2025)."
         }
       ]
     },
@@ -115,7 +126,7 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "I developed strong research methodology skills during my Master’s in Cognitive Sciences, particularly through my master’s thesis, where I learned to do a literature review, develop a testing protocol, as well as experiment design. <br/>The thesis was on 'Building a methodology for the detection of biomarkers of Mind Wandering using a EEG'. verall I have a good understanding of the research process, and where to find information in the scientific literature."
+          "text": "I developed strong research methodology skills during my Master’s in Cognitive Sciences, particularly through my master’s thesis, where I learned to do a literature review, develop a testing protocol, as well as experiment design. <br/>The thesis was on 'Building a methodology for the detection of biomarkers of Mind Wandering using a EEG'. Overall I have a good understanding of the research process, and where to find information in the scientific literature."
         }
       ]
     },
@@ -140,9 +151,41 @@
           "text": "Coming both from my personal interests and training in psychology, I've developed strong interpersonal skills, such as active listening, empathy, and caring. I'm also a team player: the team success matters more than my own. <br/>Outside work, I'm also a trained Person of Trust and a psychological first aid provider."
         }
       ]
+    },
+    {
+      "name": "Applied Cognitive Science to AI",
+      "fullName": "Applied Cognitive Science to AI",
+      "size": 9,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "4o filler: Here I combine my knowledge in Cognitive Sciences & Neurosciences with practical AI engineering to build more robust, biologically inspired machine learning models. Examples include spiking neural networks, attention-based architectures, and human-in-the-loop design."
+        }
+      ]
+    },
+    {
+      "name": "Data Visualization",
+      "fullName": "Data Visualization",
+      "size": 7,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "4o filler: Experience in data visualization using tools such as Matplotlib, Seaborn, and D3.js. Skilled in creating insightful and aesthetically pleasing visual representations of complex data."
+        }
+      ]
+    },
+    {
+      "name": "Project Management in Innovation",
+      "fullName": "Project Management & Innovation",
+      "size": 8,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "4o filler: Experienced in managing innovative projects, particularly in AI and digital transformation. Focused on agile methodologies, stakeholder alignment, and fostering creativity in problem-solving."
+        }
+      ]
     }
   ],
-
 
   "relationships": [
     {
@@ -152,22 +195,12 @@
     },
     {
       "source": "Python",
-      "target": "Machine Learning",
-      "distance": 70
-    },
-    {
-      "source": "Machine Learning",
-      "target": "Deep Learning",
-      "distance": 70
-    },
-    {
-      "source": "Python",
-      "target": "Deep Learning",
+      "target": "AI",
       "distance": 70
     },
     {
       "source": "Data Science",
-      "target": "Deep Learning",
+      "target": "AI",
       "distance": 70
     },
     {
@@ -191,13 +224,13 @@
       "distance": 70
     },
     {
-      "source": "Deep Learning",
+      "source": "AI",
       "target": "Prompt Engineering",
       "distance": 70
     },
     {
       "source": "Data Science",
-      "target": "Knowledge System",
+      "target": "Knowledge systems",
       "distance": 70
     },
     {
@@ -208,6 +241,36 @@
     {
       "source": "Cognitive sciences & Neurosciences",
       "target": "Prompt Engineering",
+      "distance": 70
+    },
+    {
+      "source": "AI",
+      "target": "Applied Cognitive Science to AI",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "Applied Cognitive Science to AI",
+      "distance": 70
+    },
+    {
+      "source": "Data Visualization",
+      "target": "Python",
+      "distance": 70
+    },
+    {
+      "source": "Data Visualization",
+      "target": "Data Science",
+      "distance": 70
+    },
+    {
+      "source": "Project Management in Innovation",
+      "target": "Soft Skills",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "Knowledge systems",
       "distance": 70
     }
   ]
