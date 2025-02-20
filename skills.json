@@ -1,210 +1,214 @@
 {
-    "skills": [
-      {
-        "name": "Python",
-        "fullName": "Python Programming",
-        "size": 4,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "Experience with basic Python programming concepts, including data structures, functions, and object-oriented programming. I've also have some knowledge with AI Python libraries for such as Tensorflow, Pandas or langchain. An AI engineer will still be more efficient, but I sure can understand his issues."
-          }
-        ]
-      },
-      {
-        "name": "Data Science",
-        "fullName": "Data Science",
-        "size": 9,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "Proficient in applying data science methodologies for data preprocessing, particularly in AI training, exploration, and analysis. Experienced in using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models."
-          }
-        ]
-      },
-      {
-        "name": "Statistics",
-        "fullName": "Statistics",
-        "size": 9,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "Solid theoretical foundation in statistical methods, including regression analysis, T-tests, χ² tests, ANOVA, and ANCOVA. Skilled in applying these techniques to interpret and analyze data effectively."
-          },
-          {
-            "type": "heading",
-            "text": "Software Expertise"
-          },
-          {
-            "type": "paragraph",
-            "text": "Experience with both programming-based and GUI-based statistical software:\n\nProgramming-Based Tools:\n- R - Advanced statistical computing and graphical representation.\n- Python - For data preprocessing.\n\nGUI-Based Tools:\n- Jamovi - Open-source software offering an easy-to-use interface for statistical analysis, often compared to SPSS.\n- G*Power - Specialized in power analysis, particularly useful for small-sample studies."
-          },
-          {
-            "type": "heading",
-            "text": "Specialization"
-          },
-          {
-            "type": "paragraph",
-            "text": "Focus on small-sample (e.g., n = 1) analyses, ensuring robust statistical interpretations despite limited data. Expertise includes visual and mathematical interpretation of results, and drawing conclusions about pseudo-causalities."
-          }
-        ]
-      },
-      {
-        "name": "ML",
-        "fullName": "Machine Learning",
-        "size": 6,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "To complete my cursus, I wanted to dig deeper on the technical side of AI, particularly what has been done before the Transformers/genAI revolution. To do so, I spent 20-25h studying a handbook of AI's: 'Artificial Intelligence: A Modern Approach'. I've used this time to complete a handful of projects to apply what I've learned. Again, the idea is to be able to understand a Data Scientist/AI engineer perspective, not replace them."
-          }
-        ]
-      },
-      {
-        "name": "AI",
-        "fullName": "Artificial Intelligence",
-        "size": 8,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "TBC"
-          },
-          {
-            "type": "heading",
-            "text": "Projects"
-          },
-          {
-            "type": "video",
-            "src": "https://touyette.github.io/Notion-Dynamic-Skill-HTML/Demos/TestDemo.mp4",
-            "description": "An AI-driven chatbot built using natural language processing techniques."
-          }
-        ]
-      },
-      {
-        "name": "Prompt Engineering",
-        "fullName": "Prompt Engineering for genAI applications",
-        "size": 10,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "I've managed a few projects involving crafting and refining prompts for genAI for my last internship, on top of following Prompt Engineering classes at Coursera. I've also been limit testing the models (mostly OpenAI ones) with almost every task that has been assigned to me since November 2022."
-          }
-        ]
-      },
-      {
-        "name": "KMS",
-        "fullName": "Knowledge Management System",
-        "size": 9,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "Knowledge management systems are all about: How can we extract, structure and use knowledge. Part of the tools in this field are knowledge graphs, ontologies."
-          }
-        ]
-      },
-      {
-        "name": "UX",
-        "fullName": "User Experience Research/Design",
-        "size": 8,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "UX is an important aspect of my master degree. I've been a UX leader as one of my 3 roles in my stay at Procter&Gamble, and I've worked fully as a UX designer/researcher at Pixminds. I have a strong understanding of the key concepts of UX and how to apply them."
-          }
-        ]
-      },
-      {
-        "name": "2nd Brain",
-        "fullName": "Second Brain in Obsidian",
-        "size": 7,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "I try to gather all the knowledge I've gathered so far in a 'second brain' in Obsidian. I've always been interested in gathering everything I know in one place and having it available quickly."
-          }
-        ]
-      },
-      {
-        "name": "Research Methodology",
-        "fullName": "Research Methodology",
-        "size": 8,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "I developed strong research methodology skills during my Master’s in Cognitive Science, particularly through my master’s thesis, where I learned to do a literature review, develop a testing protocol, as well as experiment design. Overall I have a good understanding of the research process, and where to find information in the scientific literature."
-          }
-        ]
-      },
-      {
-        "name": "Cognitive sciences & Neurosciences",
-        "fullName": "Cognitive sciences & Neurosciences Knowledge",
-        "size": 8,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "From my bachelor in psychology and my master degree, I've acquired strong knowledge of the functions of the brain, their neuroanatomy, and limitations. The specialization of the master degree trains us to learn from the neuronal structure associated with cognitive functions to create the next generation of AI."
-          }
-        ]
-      },
-      {
-        "name": "Soft Skills",
-        "fullName": "Soft Skills",
-        "size": 9,
-        "content": [
-          {
-            "type": "paragraph",
-            "text": "Coming both from my personality and training in psychology, I've developed strong interpersonal skills, such as active listening, empathy, and caring. I'm still learning to better communicate (but honestly, who isn't?). I'm also a team player; I'll raise a concern if I believe the team overlooked it, and I can let go of my opinion if the team agrees on another one. Overall, the team success matters more than my own."
-          }
-        ]
-      }
-    ],
-  
-    "relationships": [
-      {
-        "source": "Python",
-        "target": "Data Science",
-        "distance": 70
-      },
-      {
-        "source": "Python",
-        "target": "ML",
-        "distance": 70
-      },
-      {
-        "source": "ML",
-        "target": "AI",
-        "distance": 70
-      },
-      {
-        "source": "Data Science",
-        "target": "Statistics",
-        "distance": 70
-      },
-      {
-        "source": "Statistics",
-        "target": "Research Methodology",
-        "distance": 70
-      },
-      {
-        "source": "Cognitive sciences & Neurosciences",
-        "target": "Research Methodology",
-        "distance": 70
-      },
-      {
-        "source": "Cognitive sciences & Neurosciences",
-        "target": "Soft Skills",
-        "distance": 70
-      },
-      {
-        "source": "2nd Brain",
-        "target": "KMS",
-        "distance": 70
-      },
-      {
-        "source": "AI",
-        "target": "Prompt Engineering",
-        "distance": 70
-      }
-    ]
-  }
-  
+  "skills": [
+    {
+      "name": "Python",
+      "fullName": "Python Programming",
+      "size": 4,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Experience with basic Python programming concepts, including data structures, functions, and object-oriented programming. I've also have some knowledge with AI Python libraries for such as Tensorflow, Pandas or langchain.<br/>I also have great experiences coding out of my reach projects using the last genAI models."
+        }
+      ]
+    },
+    {
+      "name": "Data Science",
+      "fullName": "Data Science",
+      "size": 9,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Proficient in applying data science methodologies for data preprocessing, particularly in AI training, exploration, and analysis. Experienced in using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models."
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "fullName": "Statistics",
+      "size": 9,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Solid theoretical foundation in statistical methods, including regression analysis, T-tests, χ² tests, ANOVA, and ANCOVA. Skilled in applying these techniques to interpret and analyze data effectively."
+        },
+        {
+          "type": "heading",
+          "text": "Software Expertise"
+        },
+        {
+          "type": "paragraph",
+          "text": "Experience with both programming-based and GUI-based statistical software:<br/><br/>Programming-Based Tools:<br/>- R - Advanced statistical computing and graphical representation.<br/>- Python - For data preprocessing.<br/><br/>GUI-Based Tools:<br/>- Jamovi - Open-source software offering an easy-to-use interface for statistical analysis, often compared to SPSS.<br/>- G*Power - Specialized in power analysis, particularly useful for small-sample studies."
+        },
+        {
+          "type": "heading",
+          "text": "Small Sample Specialization"
+        },
+        {
+          "type": "paragraph",
+          "text": "Focus on small-sample (1 < n < 10) analyses, ensuring robust statistical interpretations despite limited data. Expertise includes visual and mathematical interpretation of results, and drawing conclusions about pseudo-causalities."
+        }
+      ]
+    },
+    {
+      "name": "Machine Learning",
+      "fullName": "Machine Learning",
+      "size": 6,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "To complete my cursus, I wanted to dig deeper on the historical side of AI, particularly what has been done before the Transformers/genAI revolution. To do so, I spent 20-25h studying a handbook of AI's: 'Artificial Intelligence: A Modern Approach'. I've used this time to complete a handful of projects to apply what I've learned."
+        }
+      ]
+    },
+    {
+      "name": "Deep Learning",
+      "fullName": "Deep Learning",
+      "size": 8,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "In my studies and internships I learned to code basic deep learning AIs such as a cat/dog classifier (CNN), a benign / malignant breast tumors classifier (FNN) and a mouse movement predicter (1DCNN)"
+        }
+      ]
+    },
+    {
+      "name": "Prompt Engineering",
+      "fullName": "Prompt Engineering for genAI applications",
+      "size": 10,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I've managed a few projects involving crafting and refining prompts for genAI for my internship at Procter&Gamble. Those projects were mostly exploratory, trying to see what could be automated with GenAI.<br/>On top of these projects, I've completed a Prompt Engineering classes at Coursera, and have been limit testing the models (mostly OpenAI ones) with almost every task that has been assigned to me since November 2022."
+        }
+      ]
+    },
+    {
+      "name": "Knowledge System",
+      "fullName": "Knowledge Management System",
+      "size": 9,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Knowledge management systems are all about: How can we extract, structure and use knowledge. Part of the tools in this field are knowledge graphs and ontologies. At Procter&Gamble, my main role was to be a project manager for a KMS project, so I'm quite familiar with how they work, and how genAI can be applied to them."
+        },
+        {
+          "type": "paragraph",
+          "text": "I've also been gathering all the knowledge I've gathered so far in a 'second brain' in Obsidian, a sofware for note taking that allows links and graphs visualization.<br/>I've also been checking how we can apply genAI to such a database, for either creation of new data, or recollection of existant material.  "
+        }
+      ]
+    },
+    {
+      "name": "UX",
+      "fullName": "User Experience Research/Design",
+      "size": 8,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "UX is an important aspect of my master degree. I've been a UX leader as one of my 3 roles in my stay at Procter&Gamble, and I've worked fully as a UX designer/researcher at Pixminds.<br/>I have a strong understanding of the key concepts of UX research and how to apply them. I especially thrive in user needs extraction and qualitative data analysis"
+        }
+      ]
+    },
+    {
+      "name": "Research Methodology",
+      "fullName": "Research Methodology",
+      "size": 8,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "I developed strong research methodology skills during my Master’s in Cognitive Sciences, particularly through my master’s thesis, where I learned to do a literature review, develop a testing protocol, as well as experiment design. <br/>The thesis was on 'Building a methodology for the detection of biomarkers of Mind Wandering using a EEG'. verall I have a good understanding of the research process, and where to find information in the scientific literature."
+        }
+      ]
+    },
+    {
+      "name": "Cognitive sciences & Neurosciences",
+      "fullName": "Cognitive sciences & Neurosciences Knowledge",
+      "size": 8,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "From my bachelor in psychology and my master degree, I've acquired strong knowledge of the functions of the brain, their neuroanatomy, and their limitations. The specialization of the master degree trains us to learn from the neuronal structures and models associated with cognitive functions to inspire the next generation of AI."
+        }
+      ]
+    },
+    {
+      "name": "Soft Skills",
+      "fullName": "Soft Skills",
+      "size": 9,
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Coming both from my personal interests and training in psychology, I've developed strong interpersonal skills, such as active listening, empathy, and caring. I'm also a team player: the team success matters more than my own. <br/>Outside work, I'm also a trained Person of Trust and a psychological first aid provider."
+        }
+      ]
+    }
+  ],
+
+
+  "relationships": [
+    {
+      "source": "Python",
+      "target": "Data Science",
+      "distance": 70
+    },
+    {
+      "source": "Python",
+      "target": "Machine Learning",
+      "distance": 70
+    },
+    {
+      "source": "Machine Learning",
+      "target": "Deep Learning",
+      "distance": 70
+    },
+    {
+      "source": "Python",
+      "target": "Deep Learning",
+      "distance": 70
+    },
+    {
+      "source": "Data Science",
+      "target": "Deep Learning",
+      "distance": 70
+    },
+    {
+      "source": "Data Science",
+      "target": "Statistics",
+      "distance": 70
+    },
+    {
+      "source": "Statistics",
+      "target": "Research Methodology",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "Research Methodology",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "Soft Skills",
+      "distance": 70
+    },
+    {
+      "source": "Deep Learning",
+      "target": "Prompt Engineering",
+      "distance": 70
+    },
+    {
+      "source": "Data Science",
+      "target": "Knowledge System",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "UX",
+      "distance": 70
+    },
+    {
+      "source": "Cognitive sciences & Neurosciences",
+      "target": "Prompt Engineering",
+      "distance": 70
+    }
+  ]
+}

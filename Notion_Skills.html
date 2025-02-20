@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>D3 Skill Map with Bounded Drag, Size Legend, and Closest Colors</title>
+  <title>Skill Map Visualization</title>
   <style>
     body {
       margin: 0;
@@ -14,27 +14,46 @@
       align-items: center;
     }
 
-    /* The lighter gray zone where bubbles move */
-    #gridContainer {
+    #titleBanner {
+      width: 100%;
+      height: 60px;
+      background-color: #444;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #vizContainer {
       position: relative;
       width: 90vw;
-      height: 65vh;
+      height: 70vh;
       margin-top: 3vh;
       margin-bottom: 2vh;
       background-color: #333;
       border: 2px solid #444;
-      overflow: hidden; 
+      overflow: hidden;
     }
 
-    /* Legend container */
-    #legendContainer {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 2vh;
+    #edgesSvg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
-    /* The skill bubbles in absolute positioning */
+    #nodesContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
     .skill-bubble {
       position: absolute;
       border-radius: 50%;
@@ -55,231 +74,80 @@
     .skill-bubble:hover {
       transform: scale(1.07);
     }
+
+    /* Semi-transparent overlay behind details panel */
+    #detailsOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      z-index: 9999; /* below the panel, above everything else */
+    }
+
+    /* Details panel overlay with dark style */
+    #detailsPanel {
+      position: fixed;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+      background: #1a1a1a;
+      color: #fff;
+      display: none;
+      z-index: 10000; /* above the overlay */
+      padding: 20px;
+      overflow-y: auto;
+      border: 2px solid #444;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+    }
+
+    #skillBanner {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      color: #fff;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    #closeDetails {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+      background: #444;
+      border: none;
+      color: #fff;
+    }
   </style>
 </head>
-
 <body>
-  <!-- The container for the bubble layout -->
-  <div id="gridContainer"></div>
+  <div id="titleBanner">Pierre-Axel's Skill Map</div>
 
-  <!-- Legend container for size legend -->
-  <div id="legendContainer"></div>
+  <div id="vizContainer">
+    <svg id="edgesSvg"></svg>
+    <div id="nodesContainer"></div>
+  </div>
 
-  <!-- D3 -->
+  <!-- Overlay behind details panel -->
+  <div id="detailsOverlay"></div>
+
+  <!-- Details panel for displaying node details -->
+  <div id="detailsPanel">
+    <div id="skillBanner"></div>
+    <button id="closeDetails">Close</button>
+    <div id="detailsContent"></div>
+  </div>
+
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("gridContainer");
-      const width = container.offsetWidth;
-      const height = container.offsetHeight;
-
-      // 1) Fetch data
-      fetch("skills.json")
-        .then(resp => resp.json())
-        .then(data => {
-          const { skills, relationships } = data;
-
-          // Convert each skill into a node for D3
-          const nodes = skills.map(skill => ({
-            id: skill.name,
-            skill: skill,
-            radius: skill.size * 10
-          }));
-
-          // Filter out empty source/target
-          const links = (relationships || [])
-            .filter(rel => rel.source && rel.target && rel.target !== "")
-            .map(rel => ({
-              source: rel.source,
-              target: rel.target,
-              distance: rel.distance || 80
-            }));
-
-          // 2) Create bubbles
-          const nodeElems = nodes.map(nodeData => {
-            const bubble = document.createElement("div");
-            bubble.className = "skill-bubble";
-
-            // Temporarily color them all gray; final color is assigned after simulation ends
-            bubble.style.background = "#666";
-
-            // Set diameter
-            const diameter = nodeData.radius * 2;
-            bubble.style.width = diameter + "px";
-            bubble.style.height = diameter + "px";
-
-            // Label
-            const span = document.createElement("span");
-            span.textContent = nodeData.skill.name;
-            bubble.appendChild(span);
-
-            // Add to DOM
-            container.appendChild(bubble);
-
-            // Add drag handling
-            d3.select(bubble)
-              .datum(nodeData)
-              .call(d3.drag()
-                .on("start", dragStarted)
-                .on("drag", dragged)
-                .on("end", dragEnded)
-              );
-
-            // Example click
-            bubble.addEventListener("click", () => {
-              console.log("Clicked skill:", nodeData.skill.fullName);
-            });
-
-            return { nodeData, htmlElem: bubble };
-          });
-
-          // 3) Force simulation
-          const simulation = d3.forceSimulation(nodes)
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("charge", d3.forceManyBody().strength(10))
-            .force("collision", d3.forceCollide(d => d.radius + 3))
-            .force("link", d3.forceLink(links)
-              .id(d => d.id)
-              .distance(d => d.distance)
-            )
-            .on("tick", ticked)
-            .on("end", colorByProximity); // when the layout finishes, assign final colors
-
-          function ticked() {
-            nodeElems.forEach(({ nodeData, htmlElem }) => {
-              let x = nodeData.x;
-              let y = nodeData.y;
-
-              if (x == null) x = width / 2;
-              if (y == null) y = height / 2;
-
-              // clamp to container
-              x = Math.max(nodeData.radius, Math.min(width - nodeData.radius, x));
-              y = Math.max(nodeData.radius, Math.min(height - nodeData.radius, y));
-
-              nodeData.x = x;
-              nodeData.y = y;
-
-              htmlElem.style.left = (x - nodeData.radius) + "px";
-              htmlElem.style.top  = (y - nodeData.radius) + "px";
-            });
-          }
-
-          // 4) Drag handlers
-          function dragStarted(event, d) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-          }
-          function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-          }
-          function dragEnded(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-          }
-
-          // 5) Build bubble size legend
-          buildBubbleLegend(skills);
-
-          // 6) Assign final colors after layout ends
-          function colorByProximity() {
-            // Sort nodes by final x-position
-            // So physically closer in x => closer color
-            const sortedNodes = [...nodes].sort((a, b) => a.x - b.x);
-
-            // We'll use a continuous color scale from 0..1 -> rainbow
-            const n = sortedNodes.length;
-            sortedNodes.forEach((nData, i) => {
-              const frac = n === 1 ? 0.5 : i / (n - 1); 
-              const color = d3.interpolateRainbow(frac);
-              // Update that node's bubble color
-              const bubbleObj = nodeElems.find(e => e.nodeData === nData);
-              if (bubbleObj) {
-                bubbleObj.htmlElem.style.background = color;
-              }
-            });
-          }
-        })
-        .catch(err => {
-          console.error("Failed to load skills.json:", err);
-        });
-
-      // Build bubble-size legend "like your example"
-      function buildBubbleLegend(skills) {
-        // We'll append an SVG in #legendContainer
-        const legendW = 240, legendH = 180;
-        const svg = d3.select("#legendContainer")
-          .append("svg")
-          .attr("width", legendW)
-          .attr("height", legendH);
-
-        // Identify min & max "size" from skills
-        const minS = d3.min(skills, d => d.size);
-        const maxS = d3.max(skills, d => d.size);
-
-        // d3 scale for radius in legend
-        const sizeScale = d3.scaleSqrt()
-          .domain([minS, maxS])
-          .range([10, 45]); // adjust to taste
-
-        // We'll pick 3 example values between minS and maxS
-        const exampleSizes = [minS, (minS+maxS)/2, maxS].map(Math.round);
-
-        // Position for circles in the legend
-        const xCircle = 60;
-        const yCircle = 120;
-        const xLabel = 120;
-
-        // circles
-        svg
-          .selectAll("legendCircles")
-          .data(exampleSizes)
-          .enter()
-          .append("circle")
-            .attr("cx", xCircle)
-            .attr("cy", d => yCircle - sizeScale(d))
-            .attr("r", d => sizeScale(d))
-            .style("fill", "none")
-            .style("stroke", "black");
-
-        // dashed lines
-        svg
-          .selectAll("legendLines")
-          .data(exampleSizes)
-          .enter()
-          .append("line")
-            .attr("x1", d => xCircle + sizeScale(d))
-            .attr("x2", xLabel)
-            .attr("y1", d => yCircle - sizeScale(d))
-            .attr("y2", d => yCircle - sizeScale(d))
-            .style("stroke", "black")
-            .style("stroke-dasharray", ("2,2"));
-
-        // labels
-        svg
-          .selectAll("legendLabels")
-          .data(exampleSizes)
-          .enter()
-          .append("text")
-            .attr("x", xLabel + 4)
-            .attr("y", d => yCircle - sizeScale(d))
-            .text(d => `Size = ${d}`)
-            .style("font-size", 12)
-            .attr("alignment-baseline", "middle");
-
-        // optional title
-        svg
-          .append("text")
-            .attr("x", xCircle - 10)
-            .attr("y", yCircle - 60)
-            .text("Bubble Size Legend")
-            .style("font-size", 14)
-            .style("font-weight", "bold");
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
