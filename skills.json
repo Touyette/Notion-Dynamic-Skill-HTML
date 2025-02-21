@@ -14,18 +14,18 @@
     {
       "name": "Data Science",
       "fullName": "Data Science",
-      "size": 9,
+      "size": 6,
       "content": [
         {
           "type": "paragraph",
-          "text": "Proficient in applying data science methodologies for data preprocessing, particularly in AI training, exploration, and analysis. Experienced in using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models."
+          "text": "Experience in applying data science methodologies for data preprocessing, particularly in AI training, for small models. Experienced in using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models.<br/>Combined with a good understanding of statistics and cognitive biaises, I thrive when human data is involved."
         }
       ]
     },
     {
       "name": "Statistics",
       "fullName": "Statistics",
-      "size": 9,
+      "size": 8,
       "content": [
         {
           "type": "paragraph",
@@ -52,7 +52,7 @@
     {
       "name": "AI",
       "fullName": "Artificial Intelligence",
-      "size": 9,
+      "size": 7,
       "content": [
         {
           "type": "heading",
@@ -60,7 +60,7 @@
         },
         {
           "type": "paragraph",
-          "text": "To complete my cursus, I wanted to dig deeper on the historical side of AI, particularly what has been done before the Transformers/genAI revolution. I spent 20-25h studying 'Artificial Intelligence: A Modern Approach' and completed projects applying what I learned."
+          "text": "To complete my cursus, I wanted to dig deeper on the historical side of AI, particularly what has been done before the Transformers/genAI revolution. I spent 20-25h studying 'Artificial Intelligence: A Modern Approach' and completing projects applying what I learned."
         },
         {
           "type": "image",
@@ -109,13 +109,13 @@
       ]
     },
     {
-      "name": "UX",
-      "fullName": "User Experience Research/Design",
+      "name": "HCI / UX",
+      "fullName": "Human-Computer Interaction / User Experience Research/Design",
       "size": 8,
       "content": [
         {
           "type": "paragraph",
-          "text": "UX is an important aspect of my master degree. I've been a UX leader as one of my 3 roles in my stay at Procter&Gamble, and I've worked fully as a UX designer/researcher at Pixminds.<br/>I have a strong understanding of the key concepts of UX research and how to apply them. I especially thrive in user needs extraction and qualitative data analysis"
+          "text": "User experience and human-machine interface is a central aspect of my master degree. On top of having classes on UX / HCI, I've been an UX leader as one of my 3 roles in my stay at Procter&Gamble, and I've worked fully as an UX designer/researcher at Pixminds.<br/>I have a strong understanding of the key concepts of UX research and how to apply them. I especially thrive in user needs extraction and qualitative data analysis"
         }
       ]
     },
@@ -153,8 +153,8 @@
       ]
     },
     {
-      "name": "Applied Cognitive Science to AI",
-      "fullName": "Applied Cognitive Science to AI",
+      "name": "Applied Cognitive Sciences to AI",
+      "fullName": "Applied Cognitive Sciences to AI",
       "size": 9,
       "content": [
         {
@@ -166,11 +166,25 @@
     {
       "name": "Data Visualization",
       "fullName": "Data Visualization",
-      "size": 7,
+      "size": 8,
       "content": [
         {
           "type": "paragraph",
-          "text": "4o filler: Experience in data visualization using tools such as Matplotlib, Seaborn, and D3.js. Skilled in creating insightful and aesthetically pleasing visual representations of complex data."
+          "text": "I have some experience in data visualization, especially for graph data using Gephi. I find a lot of satisfaction in creating visual representations of complex data or processes, and want to specialize myself in this direction."
+        },
+        {
+          "type": "heading",
+          "text": "Projects"
+        },
+        
+        {
+          "type": "paragraph",
+          "text": "Data Science for Mental Health Practice in France"
+        },                
+        {
+          "type": "image",
+          "src": "Projects Data/DS_psy.png",
+          "description": "One example of graph made with Gephi, about Mental health techniques used in France."
         }
       ]
     },
@@ -235,7 +249,12 @@
     },
     {
       "source": "Cognitive sciences & Neurosciences",
-      "target": "UX",
+      "target": "HCI / UX",
+      "distance": 70
+    },
+    {
+      "source": "Data Visualization",
+      "target": "HCI / UX",
       "distance": 70
     },
     {
@@ -245,12 +264,12 @@
     },
     {
       "source": "AI",
-      "target": "Applied Cognitive Science to AI",
+      "target": "Applied Cognitive Sciences to AI",
       "distance": 70
     },
     {
       "source": "Cognitive sciences & Neurosciences",
-      "target": "Applied Cognitive Science to AI",
+      "target": "Applied Cognitive Sciences to AI",
       "distance": 70
     },
     {
