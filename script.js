@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const width          = vizContainer.offsetWidth;
   const height         = vizContainer.offsetHeight;
 
-  let nodeElems = []; 
+  let nodeElems = [];
   let simulation = null;
 
   // Clicking the overlay closes the details panel.
@@ -22,6 +22,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Close details panel on button click.
   closeDetails.addEventListener("click", () => {
     hideDetails();
+  });
+
+  // Close details with Escape key
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      // Only hide if the details panel is visible
+      if (detailsPanel.style.display === "block") {
+        hideDetails();
+      }
+    }
   });
 
   function showDetails(nodeData, color) {
@@ -39,224 +49,181 @@ document.addEventListener("DOMContentLoaded", () => {
     detailsOverlay.style.display = "none";
   }
 
-fetch("skills.json")
-  .then(resp => resp.json())
-  .then(data => {
-    const { skills, relationships } = data;
+  fetch("skills.json")
+    .then(resp => resp.json())
+    .then(data => {
+      const { skills, relationships } = data;
 
-    const nodes = skills.map(skill => ({
-      id: skill.name,
-      skill: skill,
-      radius: skill.size * 10,
-      isAnchor: (skill.name === "Data Science" || skill.name === "Soft Skills")
-    }));
-
-    const links = (relationships || [])
-      .filter(rel => rel.source && rel.target)
-      .map(rel => ({
-        source: rel.source,
-        target: rel.target,
-        distance: rel.distance || 80
+      // Convert each skill's rating into a node radius.
+      const nodes = skills.map(skill => ({
+        id: skill.name,
+        skill: skill,
+        radius: (skill.rating || 1) * 10,
+        isAnchor: (skill.name === "Data Science" || skill.name === "Soft Skills")
       }));
 
-    // Place Data Science (left) + Soft Skills (right).
-    // We'll also fix them at some vertical center, but user can drag them around.
-    const margin = 80;
-    nodes.forEach(n => {
-      if (n.id === "Data Science") {
-        n.fx = n.radius + margin;         // pinned left
-        n.fy = height * 0.5;             // center vertically
-      } else if (n.id === "Soft Skills") {
-        n.fx = width - n.radius - margin; // pinned right
-        n.fy = height * 0.5;             // center vertically
-      }
-    });
+      const links = (relationships || [])
+        .filter(rel => rel.source && rel.target)
+        .map(rel => ({
+          source: rel.source,
+          target: rel.target,
+          distance: rel.distance || 80
+        }));
 
-    const graph = buildGraph(nodes, links);
-
-    // Create the bubble divs
-    nodes.forEach(nodeData => {
-      const bubble = document.createElement("div");
-      bubble.className = "skill-bubble";
-
-      // Distinguish anchors with a grey border
-      if (nodeData.isAnchor) {
-        bubble.style.border = "3px solid #999";
-      }
-      // Temporary background, final color assigned below
-      bubble.style.background = "#666";
-
-      const diameter = nodeData.radius * 2;
-      bubble.style.width = diameter + "px";
-      bubble.style.height = diameter + "px";
-
-      const span = document.createElement("span");
-      span.textContent = nodeData.skill.name;
-      bubble.appendChild(span);
-
-      // On click => show skill details
-      bubble.addEventListener("click", () => {
-        showDetails(nodeData, bubble.style.background);
+      // Place Data Science (left) + Soft Skills (right).
+      const margin = 80;
+      nodes.forEach(n => {
+        if (n.id === "Data Science") {
+          n.fx = n.radius + margin;        // pinned left
+          n.fy = height * 0.5;            // center vertically
+        } else if (n.id === "Soft Skills") {
+          n.fx = width - n.radius - margin; // pinned right
+          n.fy = height * 0.5;            // center vertically
+        }
       });
 
-      // We allow drag for all nodes, but anchors remain pinned after drag.
-      d3.select(bubble)
-        .call(d3.drag()
-          .on("start", event => dragStarted(event, nodeData))
-          .on("drag",  event => dragged(event, nodeData))
-          .on("end",   event => dragEnded(event, nodeData))
-        );
+      const graph = buildGraph(nodes, links);
 
-      nodesContainer.appendChild(bubble);
-      nodeElems.push({ nodeData, htmlElem: bubble });
-    });
+      // Create bubble divs
+      nodes.forEach(nodeData => {
+        const bubble = document.createElement("div");
+        bubble.className = "skill-bubble";
 
-    // Create edges
-    const edges = edgesSvg.selectAll("line")
-      .data(links)
-      .enter()
-      .append("line")
-      .attr("stroke", "#aaa")
-      .attr("stroke-width", 1)
-      .attr("stroke-opacity", 0.7);
+        // Distinguish anchors with a grey border
+        if (nodeData.isAnchor) {
+          bubble.style.border = "3px solid #999";
+        }
 
-    // Force simulation
-    simulation = d3.forceSimulation(nodes)
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("charge", d3.forceManyBody().strength(-2000))
-      .force("collision", d3.forceCollide(d => d.radius + 3))
-      .force("link", d3.forceLink(links)
-        .id(d => d.id)
-        .distance(d => d.distance)
-      )
-      .on("tick", ticked);
+        // Set bubble diameter
+        const diameter = nodeData.radius * 2;
+        bubble.style.width = diameter + "px";
+        bubble.style.height = diameter + "px";
 
-    // Assign final colors
-    updateNodeColors(graph);
+        // Create a container for text (skill name + rating)
+        const textContainer = document.createElement("div");
+        textContainer.style.display = "flex";
+        textContainer.style.flexDirection = "column";
+        textContainer.style.alignItems = "center";
+        textContainer.style.justifyContent = "center";
 
-    function ticked() {
-      nodeElems.forEach(({ nodeData, htmlElem }) => {
-        let x = nodeData.x, y = nodeData.y;
-        if (x == null) x = width / 2;
-        if (y == null) y = height / 2;
-        // clamp
-        x = Math.max(nodeData.radius, Math.min(width - nodeData.radius, x));
-        y = Math.max(nodeData.radius, Math.min(height - nodeData.radius, y));
-        nodeData.x = x;
-        nodeData.y = y;
-        htmlElem.style.left = (x - nodeData.radius) + "px";
-        htmlElem.style.top  = (y - nodeData.radius) + "px";
-      });
+        // Skill name
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = nodeData.skill.name;
+        nameSpan.style.fontWeight = "bold";
+        nameSpan.style.marginBottom = "3px";
+        textContainer.appendChild(nameSpan);
 
-      edges
-        .attr("x1", d => {
-          const source = getNodeById(nodes, d.source.id || d.source);
-          return source.x;
-        })
-        .attr("y1", d => {
-          const source = getNodeById(nodes, d.source.id || d.source);
-          return source.y;
-        })
-        .attr("x2", d => {
-          const target = getNodeById(nodes, d.target.id || d.target);
-          return target.x;
-        })
-        .attr("y2", d => {
-          const target = getNodeById(nodes, d.target.id || d.target);
-          return target.y;
+        // Rating as X/10
+        if (typeof nodeData.skill.rating === "number") {
+          const ratingSpan = document.createElement("span");
+          ratingSpan.textContent = `${nodeData.skill.rating}/10`;
+          ratingSpan.style.fontSize = "13px";
+          ratingSpan.style.opacity = "0.9";
+          textContainer.appendChild(ratingSpan);
+        }
+
+        bubble.appendChild(textContainer);
+
+        // On click => show skill details
+        bubble.addEventListener("click", () => {
+          showDetails(nodeData, bubble.style.background);
         });
-    }
-  })
-  .catch(err => console.error("Failed to load skills.json:", err));
 
-/**
- * Overriding the color for Data Science & Soft Skills. 
- * Others get a chunk of the rainbow with no overlap at the ends.
- */
-function updateNodeColors(graph) {
-  const anchorSoft = "Soft Skills";
-  const anchorData = "Data Science";
+        // Make bubble draggable
+        d3.select(bubble)
+          .call(d3.drag()
+            .on("start", event => dragStarted(event, nodeData))
+            .on("drag", event => dragged(event, nodeData))
+            .on("end", event => dragEnded(event, nodeData))
+          );
 
-  const distFromSoft = dijkstra(graph, anchorSoft);
-  const distFromData = dijkstra(graph, anchorData);
+        nodesContainer.appendChild(bubble);
+        nodeElems.push({ nodeData, htmlElem: bubble });
+      });
 
-  // Skip first 5% and last 5% of the rainbow
-  const customRainbow = t => d3.interpolateRainbow(0.05 + 0.9 * t);
+      // Create edges in SVG
+      const edges = edgesSvg.selectAll("line")
+        .data(links)
+        .enter()
+        .append("line")
+        .attr("stroke", "#aaa")
+        .attr("stroke-width", 1)
+        .attr("stroke-opacity", 0.7);
 
-  nodeElems.forEach(({ nodeData, htmlElem }) => {
-    const id = nodeData.id;
-    if (id === anchorSoft) {
-      // e.g. bright pink
-      htmlElem.style.background = "#ff59b4"; 
-      return;
-    }
-    if (id === anchorData) {
-      // e.g. bright green
-      htmlElem.style.background = "#7aff69"; 
-      return;
-    }
+      // Force simulation
+      simulation = d3.forceSimulation(nodes)
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("charge", d3.forceManyBody().strength(-2000))
+        .force("collision", d3.forceCollide(d => d.radius + 3))
+        .force("link", d3.forceLink(links)
+          .id(d => d.id)
+          .distance(d => d.distance)
+        )
+        .on("tick", ticked);
 
-    let dSoft = distFromSoft[id];
-    let dData = distFromData[id];
-    if (!isFinite(dSoft)) dSoft = 1000;
-    if (!isFinite(dData)) dData = 1000;
+      // Assign final colors
+      updateNodeColors(graph);
 
-    const score = dSoft / (dSoft + dData);
-    htmlElem.style.background = customRainbow(score);
-  });
-}
+      function ticked() {
+        nodeElems.forEach(({ nodeData, htmlElem }) => {
+          let x = nodeData.x, y = nodeData.y;
+          if (x == null) x = width / 2;
+          if (y == null) y = height / 2;
+          // clamp
+          x = Math.max(nodeData.radius, Math.min(width - nodeData.radius, x));
+          y = Math.max(nodeData.radius, Math.min(height - nodeData.radius, y));
+          nodeData.x = x;
+          nodeData.y = y;
+          htmlElem.style.left = (x - nodeData.radius) + "px";
+          htmlElem.style.top  = (y - nodeData.radius) + "px";
+        });
 
-/** 
- * Only reset fx,fy if it's NOT an anchor node. 
- */
-function dragEnded(event, nodeData) {
-  if (!event.active) simulation.alphaTarget(0);
-  if (!nodeData.isAnchor) {
-    nodeData.fx = null;
-    nodeData.fy = null;
+        edges
+          .attr("x1", d => getNodeById(nodes, d.source).x)
+          .attr("y1", d => getNodeById(nodes, d.source).y)
+          .attr("x2", d => getNodeById(nodes, d.target).x)
+          .attr("y2", d => getNodeById(nodes, d.target).y);
+      }
+    })
+    .catch(err => console.error("Failed to load skills.json:", err));
+
+  // Color each node based on distance from two anchors
+  function updateNodeColors(graph) {
+    const anchorSoft = "Soft Skills";
+    const anchorData = "Data Science";
+
+    const distFromSoft = dijkstra(graph, anchorSoft);
+    const distFromData = dijkstra(graph, anchorData);
+
+    // We'll skip some edges of the rainbow to avoid muddy purples, e.g. 0.1 -> 0.9
+    const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * t);
+
+    nodeElems.forEach(({ nodeData, htmlElem }) => {
+      const id = nodeData.id;
+
+      // If it's Soft Skills => forced color (red)
+      if (id === anchorSoft) {
+        htmlElem.style.background = "#f55"; 
+        return;
+      }
+      // If it's Data Science => forced color (blue)
+      if (id === anchorData) {
+        htmlElem.style.background = "#59f";
+        return;
+      }
+
+      let dSoft = distFromSoft[id];
+      let dData = distFromData[id];
+      if (!isFinite(dSoft)) dSoft = 1000;
+      if (!isFinite(dData)) dData = 1000;
+
+      const score = dSoft / (dSoft + dData);
+      const color = customRainbow(score);
+      htmlElem.style.background = color;
+    });
   }
-}
 
-
-// Updated color function => 
-// Data Science, Soft Skills forcibly get distinct preset colors
-function updateNodeColors(graph) {
-  const anchorSoft = "Soft Skills";
-  const anchorData = "Data Science";
-
-  const distFromSoft = dijkstra(graph, anchorSoft);
-  const distFromData = dijkstra(graph, anchorData);
-
-  // We'll skip the rainbow edges from 0.0-0.05 and 0.95-1.0 
-  // to avoid purple overlap
-  const customRainbow = t => d3.interpolateRainbow(0.05 + 0.9 * t);
-
-  nodeElems.forEach(({ nodeData, htmlElem }) => {
-    const id = nodeData.id;
-
-    // If it's Soft Skills => bright color #f55, Data Science => #5f5, for instance
-    if (id === anchorSoft) {
-      htmlElem.style.background = "#f55"; // red-ish
-      return;
-    }
-    if (id === anchorData) {
-      htmlElem.style.background = "#5f5"; // green-ish
-      return;
-    }
-
-    let dSoft = distFromSoft[id];
-    let dData = distFromData[id];
-    if (!isFinite(dSoft)) dSoft = 1000;
-    if (!isFinite(dData)) dData = 1000;
-
-    const score = dSoft / (dSoft + dData);
-    const color = customRainbow(score);
-    htmlElem.style.background = color;
-  });
-}
-
-
-  // Helper: Build adjacency list for Dijkstra.
+  // Build adjacency list for Dijkstra
   function buildGraph(nodes, links) {
     const graph = {};
     nodes.forEach(n => { graph[n.id] = []; });
@@ -267,7 +234,7 @@ function updateNodeColors(graph) {
     return graph;
   }
 
-  // Dijkstra => shortest path distances from startId.
+  // Dijkstra => shortest path distances from startId
   function dijkstra(graph, startId) {
     const distances = {};
     const visited = {};
@@ -301,30 +268,6 @@ function updateNodeColors(graph) {
     return distances;
   }
 
-  // Color assignment => skip the rainbow overlap around 0 and 1.
-  function updateNodeColors(graph) {
-    const anchorSoft = "Soft Skills";
-    const anchorData = "Data Science";
-
-    const distFromSoft = dijkstra(graph, anchorSoft);
-    const distFromData = dijkstra(graph, anchorData);
-
-    // 0.1 => ~blue region, 0.9 => ~red/green region, skipping purple ends.
-    const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * t);
-
-    nodeElems.forEach(({ nodeData, htmlElem }) => {
-      const id = nodeData.id;
-      let dSoft = distFromSoft[id];
-      let dData = distFromData[id];
-      if (!isFinite(dSoft)) dSoft = 1000;
-      if (!isFinite(dData)) dData = 1000;
-
-      const score = dSoft / (dSoft + dData);
-      const color = customRainbow(score);
-      htmlElem.style.background = color;
-    });
-  }
-
   // Basic D3 drag callbacks
   function dragStarted(event, nodeData) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -337,64 +280,77 @@ function updateNodeColors(graph) {
   }
   function dragEnded(event, nodeData) {
     if (!event.active) simulation.alphaTarget(0);
-    nodeData.fx = null;
-    nodeData.fy = null;
+    // Keep anchor nodes pinned; free others
+    if (!nodeData.isAnchor) {
+      nodeData.fx = null;
+      nodeData.fy = null;
+    }
   }
 
-  // Build the HTML for each item in skill.content, including images + PDFs now.
+  // Build skill content HTML; rating block goes at the bottom now
   function buildSkillContentHTML(skill) {
-    if (!Array.isArray(skill.content)) {
-      return "<p>Aucun détail supplémentaire.</p>";
+    let html = "";
+
+    // 1) Append skill.content elements
+    if (Array.isArray(skill.content)) {
+      skill.content.forEach(item => {
+        switch (item.type) {
+          case "heading":
+            html += `<h3>${item.text}</h3>`;
+            break;
+          case "paragraph":
+            html += `<p>${item.text}</p>`;
+            break;
+          case "video":
+            html += `
+              <div class="video-player">
+                <video controls>
+                  <source src="${item.src}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+                <p>${item.description || ""}</p>
+              </div>
+            `;
+            break;
+          case "image":
+            html += `
+              <div class="image-container">
+                <img src="${item.src}" alt="${item.alt || ""}" style="max-width:25%; height:auto;" />
+                <p>${item.description || ""}</p>
+              </div>
+            `;
+            break;
+          case "pdf":
+            html += `
+              <div class="pdf-container">
+                <iframe src="${item.src}" style="width:100%; height:600px;" frameborder="0"></iframe>
+                <p>${item.description || ""}</p>
+              </div>
+            `;
+            break;
+          default:
+            if (item.text) {
+              html += `<p>${item.text}</p>`;
+            }
+        }
+      });
     }
 
-    let html = "";
-    skill.content.forEach(item => {
-      switch (item.type) {
-        case "heading":
-          html += `<h3>${item.text}</h3>`;
-          break;
-        case "paragraph":
-          html += `<p>${item.text}</p>`;
-          break;
-        case "video":
-          html += `
-            <div class="video-player">
-              <video controls>
-                <source src="${item.src}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-              <p>${item.description || ""}</p>
-            </div>
-          `;
-          break;
-        case "image":
-          html += `
-            <div class="image-container">
-              <img src="${item.src}" alt="${item.alt || ""}" style="max-width:25%; height:auto;" />
-              <p>${item.description || ""}</p>
-            </div>
-          `;
-          break;
-        case "pdf":
-          // Using <iframe> for inline PDF viewing. 
-          html += `
-            <div class="pdf-container">
-              <iframe src="${item.src}" style="width:100%; height:600px;" frameborder="0"></iframe>
-              <p>${item.description || ""}</p>
-            </div>
-          `;
-          break;
-        default:
-          if (item.text) {
-            html += `<p>${item.text}</p>`;
-          }
-      }
-    });
+    // 2) Now add rating and rationale at the bottom
+    if (typeof skill.rating === "number") {
+      html += `
+        <h3>Rating ${skill.rating}/10</h3>
+        <p>${skill.ratingExplanation || ""}</p>
+      `;
+    }
+
+    if (!html) {
+      html = "<p>No details available.</p>";
+    }
     return html;
   }
 
-  // find a node by name in the nodes array
   function getNodeById(nodes, id) {
-    return nodes.find(n => n.id === id);
+    return nodes.find(n => n.id === (typeof id === "string" ? id : id.id));
   }
 });

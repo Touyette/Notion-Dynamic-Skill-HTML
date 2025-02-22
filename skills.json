@@ -3,29 +3,32 @@
     {
       "name": "Python",
       "fullName": "Python Programming",
-      "size": 4,
+      "rating": 7,
+      "ratingExplanation": "o1 placeholder: Compared to a mid-level Python developer, I'm confident in data manipulation, building small-scale apps, and using libraries like TensorFlow and Pandas. I need more experience with production-level, large-scale architecture.",
       "content": [
         {
           "type": "paragraph",
-          "text": "Experience with basic Python programming concepts, as well as using AI Python libraries such as Tensorflow, Pandas or langchain.<br/>I also have great experiences coding out of my reach projects using the last genAI models. I also know how to use Github." 
+          "text": "Experience with basic Python programming concepts, as well as using AI Python libraries such as Tensorflow, Pandas or langchain.<br/>I also have great experiences coding out of my reach projects using the last genAI models. I also know how to use Github."
         }
       ]
     },
     {
       "name": "Data Science",
       "fullName": "Data Science",
-      "size": 6,
+      "rating": 6,
+      "ratingExplanation": "o1 placeholder: I compare myself to a standard Data Scientist with a few years of experience. I'm solid on fundamentals (stats, cleaning, and simple ML), but I’m still learning advanced production workflows.",
       "content": [
         {
           "type": "paragraph",
-          "text": "Experience in applying data science methodologies for data preprocessing, particularly in AI training, for small models. Experienced in using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models.<br/>Combined with a strong understanding of statistics and cognitive biases, I excel in projects involving human data."
+          "text": "Experience in applying data science methodologies for data preprocessing, particularly in AI training, as well as using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models.<br/>Combined with a strong understanding of statistics and cognitive biases, I do best in projects involving human (questionnaire/qualitative data) or physiological data (EEG, ECG)."
         }
       ]
     },
-    { 
+    {
       "name": "Statistics",
       "fullName": "Statistics",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: I have a strong academic background. I can competently apply regression, ANOVA, etc. I'd like more in-depth projects dealing with huge datasets to broaden my expertise.",
       "content": [
         {
           "type": "paragraph",
@@ -52,7 +55,8 @@
     {
       "name": "AI",
       "fullName": "Artificial Intelligence",
-      "size": 7,
+      "rating": 7,
+      "ratingExplanation": "o1 placeholder: I compare myself to a junior-level AI engineer. I'm well-versed in theory and have built small CNN/FNN projects, but not an industry-level expert yet.",
       "content": [
         {
           "type": "heading",
@@ -80,7 +84,8 @@
     {
       "name": "Prompt Engineering",
       "fullName": "Prompt Engineering for genAI applications",
-      "size": 10,
+      "rating": 10,
+      "ratingExplanation": "o1 placeholder: I've spent extensive hours crafting prompts for real projects and took formal Prompt Engineering courses. There's always more to learn, but I'm quite advanced here.",
       "content": [
         {
           "type": "paragraph",
@@ -91,7 +96,8 @@
     {
       "name": "Knowledge systems",
       "fullName": "Knowledge Management systems",
-      "size": 9,
+      "rating": 9,
+      "ratingExplanation": "o1 placeholder: From my time at Procter&Gamble as a project manager for a KMS, I've grown comfortable structuring knowledge, using ontologies, etc. Still exploring advanced graph-based solutions.",
       "content": [
         {
           "type": "paragraph",
@@ -111,7 +117,8 @@
     {
       "name": "HCI / UX",
       "fullName": "Human-Computer Interaction / User Experience Research",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: I have strong user research experience from P&G and Pixminds. I'd like to deepen my design system expertise but thrive in user needs extraction.",
       "content": [
         {
           "type": "paragraph",
@@ -122,7 +129,8 @@
     {
       "name": "Research Methodology",
       "fullName": "Research Methodology",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: Academically well-trained (MSc in Cognitive Sciences). Industry-level experience is more limited, but I have proven capability in experiment design, literature reviews, etc.",
       "content": [
         {
           "type": "paragraph",
@@ -133,7 +141,8 @@
     {
       "name": "Cognitive sciences & Neurosciences",
       "fullName": "Cognitive sciences & Neurosciences Knowledge",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: Extensive theoretical foundation from my studies in Psychology and Cognitive Sciences. I'd like more hands-on neuroscience R&D.",
       "content": [
         {
           "type": "paragraph",
@@ -144,7 +153,8 @@
     {
       "name": "Soft Skills",
       "fullName": "Soft Skills",
-      "size": 9,
+      "rating": 9,
+      "ratingExplanation": "o1 placeholder: Compared to most colleagues, I have strong interpersonal skills, empathy, and team spirit. There's still room for growth in leadership roles.",
       "content": [
         {
           "type": "paragraph",
@@ -155,7 +165,8 @@
     {
       "name": "Applied Cognitive Sciences to AI",
       "fullName": "Applied Cognitive Sciences to AI",
-      "size":   7,
+      "rating": 7,
+      "ratingExplanation": "o1 placeholder: Bridging academic cognitive science with practical AI. I'd like real-world, large-scale projects to sharpen these skills.",
       "content": [
         {
           "type": "paragraph",
@@ -166,7 +177,8 @@
     {
       "name": "Data Visualization",
       "fullName": "Data Visualization",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: I enjoy making sense of complex data with visual tools (Gephi, etc.). I'd like to get more advanced with dynamic libraries (e.g. D3.js).",
       "content": [
         {
           "type": "paragraph",
@@ -176,11 +188,10 @@
           "type": "heading",
           "text": "Projects"
         },
-        
         {
           "type": "paragraph",
           "text": "Data Science for Mental Health Practice in France"
-        },                
+        },
         {
           "type": "image",
           "src": "Projects Data/DS_psy.png",
@@ -191,7 +202,8 @@
     {
       "name": "Project Management in Innovation",
       "fullName": "Project Management & Innovation",
-      "size": 8,
+      "rating": 8,
+      "ratingExplanation": "o1 placeholder: Nine months of real experience at P&G, plus academic group projects. I’m comfortable coordinating cross-functional teams but always room to improve in scaling innovation.",
       "content": [
         {
           "type": "paragraph",
