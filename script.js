@@ -8,29 +8,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const skillBanner    = document.getElementById("skillBanner");
   const detailsContent = document.getElementById("detailsContent");
   const closeDetails   = document.getElementById("closeDetails");
-  const width          = vizContainer.offsetWidth;
-  const height         = vizContainer.offsetHeight;
 
-  let nodeElems = [];
+  // Container dimensions
+  let width  = vizContainer.offsetWidth;
+  let height = vizContainer.offsetHeight;
+  let shortDim = Math.min(width, height);
+
+  // Scale factors for forces
+  const BASE_CHARGE_FACTOR      = -4;   // multiplied by shortDim => negative => repulsion
+  const COLLISION_OFFSET_FACTOR = 0.04; // fraction of shortDim to add to collision radius
+
+  let nodeElems  = [];
   let simulation = null;
 
-  // Clicking the overlay closes the details panel.
-  detailsOverlay.addEventListener("click", () => {
-    hideDetails();
-  });
-
-  // Close details panel on button click.
-  closeDetails.addEventListener("click", () => {
-    hideDetails();
-  });
-
-  // Close details with Escape key
+  detailsOverlay.addEventListener("click", hideDetails);
+  closeDetails.addEventListener("click", hideDetails);
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      // Only hide if the details panel is visible
-      if (detailsPanel.style.display === "block") {
-        hideDetails();
-      }
+    if (event.key === "Escape" && detailsPanel.style.display === "block") {
+      hideDetails();
     }
   });
 
@@ -54,14 +49,34 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(data => {
       const { skills, relationships } = data;
 
-      // Convert each skill's rating into a node radius.
-      const nodes = skills.map(skill => ({
-        id: skill.name,
-        skill: skill,
-        radius: (skill.rating || 1) * 10,
-        isAnchor: (skill.name === "Data Science" || skill.name === "Soft Skills")
-      }));
+      // Determine rating range
+      const allRatings = skills.map(s => s.rating || 1);
+      const minRating  = d3.min(allRatings);
+      const maxRating  = d3.max(allRatings);
 
+      // Power scale for bubble radii
+      const radiusScale = d3.scalePow()
+        .exponent(0.8)
+        .domain([minRating, maxRating])
+        // Adjust these multipliers to taste
+        .range([0.08 * shortDim, 0.15 * shortDim])
+        .clamp(true);
+
+      // Build node data
+      const nodes = skills.map(skill => {
+        const rating  = skill.rating || 1;
+        const radius  = radiusScale(rating);
+        return {
+          id: skill.name,
+          skill: skill,
+          radius: radius,
+          isAnchor:
+            skill.name === "Data Science" ||
+            skill.name === "Cognitive sciences & Neurosciences"
+        };
+      });
+
+      // Build link data
       const links = (relationships || [])
         .filter(rel => rel.source && rel.target)
         .map(rel => ({
@@ -70,21 +85,21 @@ document.addEventListener("DOMContentLoaded", () => {
           distance: rel.distance || 80
         }));
 
-      // Place Data Science (left) + Soft Skills (right).
+      // Pin anchors: Data Science (left), Cog Sci (right)
       const margin = 80;
       nodes.forEach(n => {
         if (n.id === "Data Science") {
-          n.fx = n.radius + margin;        // pinned left
-          n.fy = height * 0.5;            // center vertically
-        } else if (n.id === "Soft Skills") {
-          n.fx = width - n.radius - margin; // pinned right
-          n.fy = height * 0.5;            // center vertically
+          n.fx = n.radius + margin;
+          n.fy = height * 0.5;
+        } else if (n.id === "Cognitive sciences & Neurosciences") {
+          n.fx = width - n.radius - margin;
+          n.fy = height * 0.5;
         }
       });
 
       const graph = buildGraph(nodes, links);
 
-      // Create bubble divs
+      // Create the bubble elements
       nodes.forEach(nodeData => {
         const bubble = document.createElement("div");
         bubble.className = "skill-bubble";
@@ -94,47 +109,50 @@ document.addEventListener("DOMContentLoaded", () => {
           bubble.style.border = "3px solid #999";
         }
 
-        // Set bubble diameter
+        // Each bubble's diameter
         const diameter = nodeData.radius * 2;
-        bubble.style.width = diameter + "px";
-        bubble.style.height = diameter + "px";
+        bubble.style.width  = `${diameter}px`;
+        bubble.style.height = `${diameter}px`;
 
-        // Create a container for text (skill name + rating)
+        // Container for text (skill name + rating)
         const textContainer = document.createElement("div");
-        textContainer.style.display = "flex";
-        textContainer.style.flexDirection = "column";
-        textContainer.style.alignItems = "center";
+        textContainer.style.display         = "flex";
+        textContainer.style.flexDirection  = "column";
+        textContainer.style.alignItems     = "center";
         textContainer.style.justifyContent = "center";
+
+        // **Make font size ~60% of bubble radius** 
+        const rawFontSize = nodeData.radius * 0.2;
+        const clampedFontSize = Math.max(12, Math.min(rawFontSize, 36));
+        textContainer.style.fontSize = `${clampedFontSize}px`;
 
         // Skill name
         const nameSpan = document.createElement("span");
-        nameSpan.textContent = nodeData.skill.name;
+        nameSpan.textContent     = nodeData.skill.name;
         nameSpan.style.fontWeight = "bold";
-        nameSpan.style.marginBottom = "3px";
         textContainer.appendChild(nameSpan);
 
-        // Rating as X/10
+        // Rating
         if (typeof nodeData.skill.rating === "number") {
           const ratingSpan = document.createElement("span");
           ratingSpan.textContent = `${nodeData.skill.rating}/10`;
-          ratingSpan.style.fontSize = "13px";
-          ratingSpan.style.opacity = "0.9";
+          ratingSpan.style.opacity  = "0.9";
           textContainer.appendChild(ratingSpan);
         }
 
         bubble.appendChild(textContainer);
 
-        // On click => show skill details
+        // On click => details
         bubble.addEventListener("click", () => {
           showDetails(nodeData, bubble.style.background);
         });
 
-        // Make bubble draggable
+        // Draggable
         d3.select(bubble)
           .call(d3.drag()
             .on("start", event => dragStarted(event, nodeData))
-            .on("drag", event => dragged(event, nodeData))
-            .on("end", event => dragEnded(event, nodeData))
+            .on("drag",  event => dragged(event, nodeData))
+            .on("end",   event => dragEnded(event, nodeData))
           );
 
         nodesContainer.appendChild(bubble);
@@ -153,15 +171,15 @@ document.addEventListener("DOMContentLoaded", () => {
       // Force simulation
       simulation = d3.forceSimulation(nodes)
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("charge", d3.forceManyBody().strength(-2000))
-        .force("collision", d3.forceCollide(d => d.radius + 3))
+        // Scale the charge by shortDim
+        .force("charge", d3.forceManyBody().strength(BASE_CHARGE_FACTOR * shortDim))
+        .force("collision", d3.forceCollide(d => d.radius + (COLLISION_OFFSET_FACTOR * shortDim)))
         .force("link", d3.forceLink(links)
           .id(d => d.id)
           .distance(d => d.distance)
         )
         .on("tick", ticked);
 
-      // Assign final colors
       updateNodeColors(graph);
 
       function ticked() {
@@ -169,13 +187,15 @@ document.addEventListener("DOMContentLoaded", () => {
           let x = nodeData.x, y = nodeData.y;
           if (x == null) x = width / 2;
           if (y == null) y = height / 2;
-          // clamp
-          x = Math.max(nodeData.radius, Math.min(width - nodeData.radius, x));
+
+          // clamp inside container
+          x = Math.max(nodeData.radius, Math.min(width  - nodeData.radius, x));
           y = Math.max(nodeData.radius, Math.min(height - nodeData.radius, y));
+
           nodeData.x = x;
           nodeData.y = y;
-          htmlElem.style.left = (x - nodeData.radius) + "px";
-          htmlElem.style.top  = (y - nodeData.radius) + "px";
+          htmlElem.style.left = `${x - nodeData.radius}px`;
+          htmlElem.style.top  = `${y - nodeData.radius}px`;
         });
 
         edges
@@ -187,43 +207,37 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => console.error("Failed to load skills.json:", err));
 
-  // Color each node based on distance from two anchors
+  // Distances => color
   function updateNodeColors(graph) {
-    const anchorSoft = "Soft Skills";
     const anchorData = "Data Science";
+    const anchorCogn = "Cognitive sciences & Neurosciences";
 
-    const distFromSoft = dijkstra(graph, anchorSoft);
     const distFromData = dijkstra(graph, anchorData);
+    const distFromCogn = dijkstra(graph, anchorCogn);
 
-    // We'll skip some edges of the rainbow to avoid muddy purples, e.g. 0.1 -> 0.9
     const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * t);
 
     nodeElems.forEach(({ nodeData, htmlElem }) => {
       const id = nodeData.id;
-
-      // If it's Soft Skills => forced color (red)
-      if (id === anchorSoft) {
-        htmlElem.style.background = "#f55"; 
-        return;
-      }
-      // If it's Data Science => forced color (blue)
       if (id === anchorData) {
-        htmlElem.style.background = "#59f";
+        htmlElem.style.background = "#59f"; // bright blue
+        return;
+      }
+      if (id === anchorCogn) {
+        htmlElem.style.background = "#f55"; // red
         return;
       }
 
-      let dSoft = distFromSoft[id];
       let dData = distFromData[id];
-      if (!isFinite(dSoft)) dSoft = 1000;
+      let dCogn = distFromCogn[id];
       if (!isFinite(dData)) dData = 1000;
+      if (!isFinite(dCogn)) dCogn = 1000;
 
-      const score = dSoft / (dSoft + dData);
-      const color = customRainbow(score);
-      htmlElem.style.background = color;
+      const ratio = dCogn / (dCogn + dData);
+      htmlElem.style.background = customRainbow(ratio);
     });
   }
 
-  // Build adjacency list for Dijkstra
   function buildGraph(nodes, links) {
     const graph = {};
     nodes.forEach(n => { graph[n.id] = []; });
@@ -234,11 +248,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return graph;
   }
 
-  // Dijkstra => shortest path distances from startId
   function dijkstra(graph, startId) {
     const distances = {};
-    const visited = {};
-    const queue = new Set();
+    const visited   = {};
+    const queue     = new Set();
 
     Object.keys(graph).forEach(id => {
       distances[id] = Infinity;
@@ -268,30 +281,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return distances;
   }
 
-  // Basic D3 drag callbacks
   function dragStarted(event, nodeData) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
     nodeData.fx = nodeData.x;
     nodeData.fy = nodeData.y;
   }
+
   function dragged(event, nodeData) {
     nodeData.fx = event.x;
     nodeData.fy = event.y;
   }
+
   function dragEnded(event, nodeData) {
     if (!event.active) simulation.alphaTarget(0);
-    // Keep anchor nodes pinned; free others
     if (!nodeData.isAnchor) {
       nodeData.fx = null;
       nodeData.fy = null;
     }
   }
 
-  // Build skill content HTML; rating block goes at the bottom now
   function buildSkillContentHTML(skill) {
     let html = "";
-
-    // 1) Append skill.content elements
     if (Array.isArray(skill.content)) {
       skill.content.forEach(item => {
         switch (item.type) {
@@ -335,15 +345,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-
-    // 2) Now add rating and rationale at the bottom
     if (typeof skill.rating === "number") {
       html += `
         <h3>Rating ${skill.rating}/10</h3>
         <p>${skill.ratingExplanation || ""}</p>
       `;
     }
-
     if (!html) {
       html = "<p>No details available.</p>";
     }
