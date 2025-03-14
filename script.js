@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // **Make font size ~60% of bubble radius** 
         const rawFontSize = nodeData.radius * 0.2;
-        const clampedFontSize = Math.max(12, Math.min(rawFontSize, 36));
+        const clampedFontSize = Math.max(12, Math.min(rawFontSize, 24));
         textContainer.style.fontSize = `${clampedFontSize}px`;
 
         // Skill name

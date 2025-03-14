@@ -4,11 +4,11 @@
       "name": "Python",
       "fullName": "Python Programming",
       "rating": 7,
-      "ratingExplanation": "Comparing myself to a junior developper, I'm confident in data manipulation, building small-scale apps, and using libraries like TensorFlow and Pandas.<br/>I need more experience with large-scale projects, where I may lack some of the commun sense developped with dev schools / daily practice. However I'm more likely to come up with new ideas to solve a problem from my diverssified background.",
+      "ratingExplanation": "Comparing myself to a junior developer, I'm confident in data manipulation, building small-scale apps.<br/>I need more experience with large-scale projects, where I may lack some of the 'engineering best practices' learned in schools / daily practice. However I'm more likely to come up with new ideas to solve a problem from my diversified background.",
       "content": [
         {
           "type": "paragraph",
-          "text": "Experience with basic Python programming concepts, as well as using AI Python libraries such as Tensorflow, Pandas or langchain.<br/>I also have great experiences coding out of my reach projects using the last genAI models. I also know how to use Github."
+          "text": "Experience with basic Python programming concepts, using AI Python libraries such as TensorFlow, Pandas or LangChain, as well as GitHub.<br/>I also have great experiences coding out of my reach projects using the lastest genAI models."
         }
       ]
     },
@@ -16,11 +16,11 @@
       "name": "Data Science",
       "fullName": "Data Science",
       "rating": 9,
-      "ratingExplanation": "Comparing myself to Junior Data Scientist, I may have less experience on concrete machine learning applications (e.g. SVM / RF), but I compensate with a better understanding of electrophysiological signals, as well as great knowledge of cognitive biaises that may happen in the before, during or after the processing.<br/>I want to learn more about SQL, as well as deepen my graph database manipulation skills with more projects. ",
+      "ratingExplanation": "Comparing myself to a Junior Data Scientist, I may have less experience with concrete machine learning applications (e.g. SVM / RF), but I compensate with a better understanding of electrophysiological signals, as well as strong knowledge of cognitive biases that may happen in the before, during or after the processing.<br/>I want to learn more about SQL, and deepen my graph database manipulation skills with more projects.",
       "content": [
         {
           "type": "paragraph",
-          "text": "Experience in applying data science methodologies for data preprocessing, particularly in AI training, as well as using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models.<br/>Combined with a strong understanding of statistics and cognitive biases, I do best in projects involving human (questionnaire/qualitative data) or physiological data (EEG, ECG/pulse, EMG)."
+          "text": "Experience in applying data science methodologies for data preprocessing, particularly in AI training, as well as using Python libraries such as Pandas, NumPy, and Scikit-learn for data manipulation, cleaning, and creating predictive models.<br/>Combined with a strong understanding of statistics and cognitive biases, I do best in projects involving human (questionnaire/qualitative data). I'm also train for signal processing of physiological data (EEG, ECG/pulse, EMG)."
         }
       ]
     },
@@ -28,7 +28,7 @@
       "name": "Statistics",
       "fullName": "Statistics",
       "rating": 9,
-      "ratingExplanation": "Comparing myself to the statistic level of a junior data scientist, I have a stronger academic background. I feel more confident in building hypothesis and testing them, as well as being critical of the mothodology used. I can also analyse small samples data, often used in clinical settings. <br/>I have less experience with Markov models & Bayesian approaches, as they're rarely used in human sciences, but I'm willing to learn them to complete my backgroud.",
+      "ratingExplanation": "Compared to a junior data scientist, I have a stronger academic background, and I'm confident in my ability to build scientific hypothesis and test them, as well as being critical of the methodology used. I can also analyse small samples data, often used in clinical settings. <br/>I have less experience with Markov models & Bayesian approaches, as they're rarely used in human sciences, but I'm willing to learn them to complete my backgroud.",
       "content": [
         {
           "type": "paragraph",
@@ -56,7 +56,7 @@
       "name": "AI",
       "fullName": "Artificial Intelligence",
       "rating": 7,
-      "ratingExplanation": "This one is hard to rate, the field of IA is very large. Comparing myself to a junior AI engineer, I have good understanding of most basic ML approachs (MCTS, search algo, building agent…) and some experience building them. I also have a strong statistical background that is helpful in ML. In DP, I have good theorical knowledge, specially focusing on the NLP approaches (e.g. embeddings, Transformer) but for complex models, an AI engineer would be a better choice.<br/>My edge is in building new AIs, inspired by cognitive/neuronal models, and I'm very curious and knowledgeable to more 'cognitive approaches' to enhance AI such as Chain of Thougths, team of agents.<br/>",
+      "ratingExplanation": "Comparing myself to a junior AI engineer, I have good understanding of most basic ML approachs (MCTS, search algo, building agent…) and some experience building them. In DeepLearning, I have good theorical knowledge, specially focusing on the NLP approaches (e.g. embeddings, Transformer), as well as experience building small neural networks.<br/>My edge is in building new AIs, inspired by cognitive/neuronal models, and I'm very curious about the more 'cognitive approaches' to enhance AI such as Chain of Thoughts, team of agents.<br/>",
       "content": [
         {
           "type": "heading",
@@ -64,7 +64,7 @@
         },
         {
           "type": "paragraph",
-          "text": "I also had some classes on ML with Matlab, as well as the understanding of linear regression from statistics. I'm best at NLP, where I know a lot of preprocessing techniques (e.g. Lemmatization, TF-IDF, embeddings, NER). I found NLP fascinating and I'm always willing to learn mor about it. To complete complete my background in AI, I spent 20-25h studying 'Artificial Intelligence: A Modern Approach' and completing 3-4 projects applying what I learned in it. This book covers a lot of the ML that AI engineer / Data scientist will learn. The main idea being to understand the logic of ML models / algorithms and push myself to get from a theorical side to technical/practical experiences."
+          "text": "I also had some classes on ML with Matlab, as well as the understanding of linear regression from statistics. I'm best at NLP, where I know a lot of preprocessing techniques (e.g. Lemmatization, TF-IDF, embeddings, NER). I found NLP fascinating and I'm always willing to learn more about it.<br/>To complete complete my background in AI, I spent 20-25h studying a 1100-pages' book: 'Artificial Intelligence: A Modern Approach' and completing 3-4 projects applying what I learned in it. This book covers a lot of the ML that AI engineer / Data scientist will learn in their cursus. The main idea is to understand the logic of ML models / algorithms and push myself to get from a theoretical side to technical/practical experiences."
         },
         {
           "type": "image",
@@ -77,7 +77,7 @@
         },
         {
           "type": "paragraph",
-          "text": "I'm well-versed in theory for the pre-transformers models, and have built a few models such as cat/dog classifier (CNN), a benign/malignant breast tumor classifier (FNN), and a mouse movement predictor (1D CNN).<br/>I have a good theorical understanding of the transformer and LLMs (enough to teach it to non IT people), and in my internship at P&G, I tested automating some LLM with Langchain / openAI libraries for exploratory purposes."
+          "text": "I'm well-versed in theory for the pre-transformers models, and have built a few models such as cat/dog classifier (CNN), a benign/malignant breast tumor classifier (FNN), and a mouse movement predictor (1D CNN).<br/>I have a good theoretical understanding of the transformer and LLMs (enough to teach it to non IT people), and in my internship at P&G, I tested automating some LLM with Langchain / OpenAI libraries for exploratory purposes."
         }
       ]
     },
@@ -85,11 +85,11 @@
       "name": "Prompt Engineering",
       "fullName": "Prompt Engineering for genAI applications",
       "rating": 9.5,
-      "ratingExplanation": "Comparing myself to 'prompt engineering expert', I've spent extensive hours crafting prompts for real projects and took formal Prompt Engineering courses, as well as testing models innovation when they're out.<br/> There's always more to learn, such as building pipelines to automatically test prompts on large samples to get statistically significant results, but we're already out of what most people consider Prompt Engineering to be.",
+      "ratingExplanation": "Compared to 'prompt engineering expert', I've spent extensive hours crafting prompts for real projects and took formal Prompt Engineering courses, as well as testing models innovation when they're out.<br/> There's always more to learn, such as building pipelines to automatically test prompts on large samples to get statistically significant results, but we're already out of what most people consider Prompt Engineering to be.",
       "content": [
         {
           "type": "paragraph",
-          "text": "I've managed a few projects involving crafting and refining prompts for genAI for my internship at Procter&Gamble. Those projects were mostly exploratory, trying to see what could be automated with GenAI.<br/I also completed Prompt Engineering courses at Coursera and have tested generative AI models (mostly OpenAI ones) with almost every task that has been assigned to me since November 2022."
+          "text": "I've managed a few projects involving crafting and refining prompts for genAI for my internship at Procter&Gamble. Those projects were mostly exploratory, trying to see what could be automated with GenAI.<br/>I also completed Prompt Engineering courses at Coursera and have tested genAI models (mostly OpenAI ones) with almost every task that has been assigned to me since November 2022."
         }
       ]
     },
@@ -97,7 +97,7 @@
       "name": "Knowledge systems",
       "fullName": "Knowledge Management systems",
       "rating": 7.5,
-      "ratingExplanation": "I'm passionated about how we can represent knowledge in our brain, as well as in systesm. From my time at Procter&Gamble as a project manager for a knowledge management system, I've grown comfortable structuring knowledge, using ontologies, and genAI applications into them. I certainly have more to learn, but I want to focus my interest on AI enhanced knowlledge systems.",
+      "ratingExplanation": "I'm passionate about how we can represent knowledge in our brain, as well as in systems. From my time at Procter&Gamble as a project manager for a knowledge management system, I've grown comfortable structuring knowledge, using ontologies, and genAI applications into them. I’m eager to keep exploring advanced ontologies and AI-enhanced knowledge management",
       "content": [
         {
           "type": "paragraph",
@@ -118,11 +118,11 @@
       "name": "HCI / UX",
       "fullName": "Human-Computer Interaction / User Experience Research",
       "rating": 8.5,
-      "ratingExplanation": "Comparing myself to a full time UX researcher, UX concepts are clear to me, and how I know how to construct a methodology to measure the right metrics. I thrive in needs extractions and conception of solutions, but I lack the years of experience to be a professional UI designer",
+      "ratingExplanation": "Measure against a full time UX researcher, Measured against a full-time UX researcher, I'm proficient in UX concepts and able to construct methodologies that target the right metrics. I thrive in needs extractions and conception of solutions. I do not, however, have formal UI design experience to the same degree as a dedicated professional", 
       "content": [
         {
           "type": "paragraph",
-          "text": "User experience and human-machine interface is a central aspect of my master degree, the cognitive sciences aspect of it is a great asset to understand how a solution will be received by users. In addition to formal coursework, I served as a UX lead during my time at Procter & Gamble and worked extensively as a UX designer/researcher at Pixminds.<br/>I have a strong understanding of the key concepts of UX research and how to apply them. I particularly thrive in user needs extraction and qualitative data analysis, but can also create desgins on Figma"
+          "text": "User experience and human-machine interface is a central aspect of my master degree, the cognitive sciences aspect of it is a great asset to understand how a solution will be received by users. In addition to formal coursework, I served as a UX lead during my time at Procter&Gamble and worked extensively as a UX designer/researcher at Pixminds.<br/>I have a strong understanding of the key concepts of UX research and how to apply them. I particularly thrive in user needs extraction and qualitative data analysis, but can also create designs on Figma"
         }
       ]
     },
@@ -130,23 +130,23 @@
       "name": "Research Methodology",
       "fullName": "Research Methodology",
       "rating": 8,
-      "ratingExplanation": "Comparing myself to a cognitive scientist, I'm academically well-trained (MSc in Cognitive Sciences), and I'm able to design a scientific approach to problem solving, specially in cognitives sciences.<br/> In my Procter & Gamble internsup, I started to learn how to combine the rigor of science with speed of execution from the business world, and I wish to develop my skills in this area.",
+      "ratingExplanation": "I'm academically trained on how to conduct scientific research, with practical insights from a fast-paced business environment, but don't have more experience outside my master's thesis",
       "content": [
         {
           "type": "paragraph",
-          "text": "I developed strong research methodology skills during my Master’s in Cognitive Sciences, particularly through my master’s thesis, where I learned to review literature, develop a testing protocol, as well as experiment design. <br/>The thesis was about 'Building a methodology for the detection of biomarkers of Mind Wandering using a EEG'. Overall I have a good understanding of the research process, and where to find information in the scientific literature, especially for cognitive sciences."
+          "text": "I developed strong research methodology skills during my Master’s in Cognitive Sciences, particularly through my master’s thesis on 'detection of biomarkers of Mind Wandering using a EEG', where I learned to review literature, develop a testing protocol, as well as experiment design. <br/>Overall I have a good understanding of the research process, and where to find information in the scientific literature, especially for cognitive sciences."
         }
       ]
     },
     {
       "name": "Cognitive sciences & Neurosciences",
       "fullName": "Cognitive sciences & Neurosciences Knowledge",
-      "rating": 8,
-      "ratingExplanation": "o1 placeholder: Extensive theoretical foundation from my studies in Psychology and Cognitive Sciences. I'd like more hands-on neuroscience R&D.",
+      "rating": 9,
+      "ratingExplanation": "Extensive theoretical foundation from my studies in Psychology and Cognitive Sciences. As any scientific fields, there is always more to learn from research, but given enough time, I'm able to read and bring specialized knowledge to a project.",
       "content": [
         {
           "type": "paragraph",
-          "text": "Throughout my bachelor's in psychology and my master degree, I've acquired strong knowledge of the functions of the brain, their neuroanatomy, and their limitations. The specialization of the master degree trains us to learn from the neuronal structures and models associated with cognitive functions to inspire the next generation of AI.<br/>For example, I'm familiar with the models of perception, memory, attention, language, decision-making and emotions."
+          "text": "Throughout my bachelor's in psychology and my master degree, I've acquired strong knowledge of the functions of the brain, their neuroanatomy, and their limitations. The master's specialization trains us to learn from the neuronal structures and models associated with cognitive functions to inspire the next generation of AI.<br/>For example, I'm familiar with the models of perception, memory, attention, language, decision-making and emotions."
         }
       ]
     },
@@ -154,35 +154,35 @@
       "name": "Soft Skills",
       "fullName": "Soft Skills",
       "rating": 9,
-      "ratingExplanation": "Compared to the average person in the business, I have strong interpersonal skills, including active listening, empathy, and team spirit. I find great leadership to be very inspriring, and I wish to deepen my understanding and experience of it, foreseeing managers positions later in my life",
+      "ratingExplanation": "Compared to the average person in the business, I have strong interpersonal skills, including active listening, empathy, and team spirit. I find great leadership to be very inspiring, and I wish to deepen my understanding and experience of it, foreseeing managers positions later in my life",
       "content": [
         {
           "type": "paragraph",
-          "text": "Coming both from my personal interests and training in psychology, I've developed strong interpersonal skills, such as active listening, empathy, and caring. I am a strong team player, prioritizing collective success over individual achievements. I'm also very open-minded about mental health challenges from my studies, and bring an openness to new ways of working, that best fits people's needs.<br/>Outside work, I'm also a trained Person of Trust and a psychological first aid provider."
+          "text": "Coming both from my personal interests and training in psychology, I've developed strong interpersonal skills, such as active listening, empathy, and caring.<br/>I am a strong team player, prioritizing collective success over individual achievements. From my studies, I'm also very open-minded about mental health challenges, and bring an openness to new ways of working, that best fits people's needs.<br/>Outside work, I'm also a trained Person of Trust and a psychological first aid provider."
         }
       ]
     },
     {
-      "name": "Applied Cognitive Sciences to AI",
-      "fullName": "Applied Cognitive Sciences to AI",
-      "rating": 7,
-      "ratingExplanation": "Bridging academic cognitive science with practical AI. There is still so much research and testing to be done in this field, and I am committed to pioneering research and practical innovations! ",
+      "name": "Brain-Inspired AI",
+      "fullName": "Brain-Inspired AI",
+      "rating": 6,
+      "ratingExplanation": "I have good theorical knowledge from cognitive sciences and AI,and have read some scientific papers on modelisation of the mind. I've done some projects on modeling a specific bias of the brain during my studies, but still have so much more to learn. I'm however passionated about that, spent long hours on personal projects trying to modelize the mind, and want to learn more about it!",
       "content": [
         {
           "type": "paragraph",
-          "text": "The core of my master's degree is to combine knowledge in Cognitive Sciences & Neurosciences, with practical AI engineering to build more robust, biologically inspired machine learning models. <br/><br/>Example: Creating a RAG genAI system based on the brain dual encoding of events as 'facts' and 'emotions' (those have 2 differents neural pathways in the brain), to enhance memorization, provide adaptative recalls and speed up the process of searching memory.  "
+          "text": "The core of my master's degree is to combine knowledge in Cognitive Sciences & Neurosciences, with practical AI engineering to build more robust, biologically inspired machine learning models. <br/><br/>Example: Creating a RAG genAI system based on the brain dual encoding of events as 'facts' and 'emotions' (those have 2 differents neural pathways in the brain), to enhance memorization, provide adaptative recalls and speed up the process of searching memory."
         }
       ]
     },
     {
       "name": "Data Visualization",
       "fullName": "Data Visualization",
-      "rating": 7,
-      "ratingExplanation": "I enjoy making sense of complex data with visual tools (Gephi, neo4J, seaborn, matplotlib, D3, ggplot2 etc.). Next I want to develop my ability to manage dataset with SQL or ETL pipelines ",
+      "rating": 7.5,
+      "ratingExplanation": "I enjoy making sense of complex data with visual tools, and have done a few projects focusing on create great data visuals, or processes visuals. Next I want to develop my ability to manage dataset with SQL or ETL pipelines, and learn how to do data maps in 3D.",
       "content": [
         {
           "type": "paragraph",
-          "text": "I have some experience in data visualization, especially for graph data using Gephi, or using statistical tools (developped in the Statistics skill). I find it especially rewarding to create visual representations of complex data and processes, and I aim to further specialize in this field"
+          "text": "I have some experience in data visualization, especially for graph data using Gephi, using statistical tools (developped in the Statistics skill), or others libraries (seaborn, matplotlib, D3, ggplot2 etc.). I find it especially rewarding to create visual representations of complex data and processes, which I perceive to be the natural result of good UX and good programming."
         },
         {
           "type": "heading",
@@ -195,7 +195,7 @@
         {
           "type": "image",
           "src": "Projects Data/DS_psy.png",
-          "description": "One example of graph made with Gephi, about Mental health techniques used in France. I've scraped 3 whole sites about mental health practitionners in France, and used either genAI / JSON fetching for extracting the relevant information.  <a href=\"https://touyette.github.io/Notion-Dynamic-Skill-HTML/Projects%20Data/PsynetOnly%2CJaccard5%2CUnionsize10%2Coccurence2%2CJifanYu.svg\">Detailed view of the graph</a>"
+          "description": "One example of graph made with Gephi, about Mental health techniques used in France. I've scraped 3 whole sites about mental health practitionners in France, and used either genAI / JSON fetching for extracting the relevant information. The links are 5-neighbors Jaccard similarity scores. <a href=\"https://touyette.github.io/Notion-Dynamic-Skill-HTML/Projects%20Data/PsynetOnly%2CJaccard5%2CUnionsize10%2Coccurence2%2CJifanYu.svg\">Detailed view of the graph</a>"
         }
       ]
     },
@@ -203,7 +203,7 @@
       "name": "Project Management in Innovation",
       "fullName": "Project Management & Innovation",
       "rating": 8,
-      "ratingExplanation": "Comparing myself to a project manager with a few years of experience, I’m comfortable coordinating cross-functional teams, and my versatile profile allow me understand most actors problems, as well as come up with creative solutions. There is always room to improve in scaling innovation and working on different fields of innovation.",
+      "ratingExplanation": "Comparing myself to a project manager with a few years of experience, I’m comfortable coordinating cross-functional teams, and my versatile profile allow me understand most actors problems, as well as come up with creative solutions. There is always room to improve in scaling innovation and working on different fields of innovation than AI.",
       "content": [
         {
           "type": "paragraph",
@@ -219,7 +219,7 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "I consider my broad academic exposure a key strength, letting me adapt quickly to unfamiliar topics or new challenges.<br/>I’ve studied physics, maths, neurosciences, cognitive sciences, and clinical psychology. I've also  been introduced to law, philosophy, sociology, and robotics, with a focus on their application to AIs.<br/>This breadth helps me connect with various stakeholders—whether legal experts, engineers, or user experience designers—and find novel solutions that integrate multiple perspectives."
+          "text": "I consider my broad academic exposure a key strength, letting me adapt quickly to unfamiliar topics or new challenges.<br/>I’ve studied physics, maths, neurosciences, cognitive sciences, and clinical psychology. I've also been introduced to law, philosophy, sociology, and robotics, with a focus on their application to AIs.<br/>This breadth helps me connect with various stakeholders—whether legal experts, engineers, or user experience designers—and find novel solutions that integrate multiple perspectives."
         }
       ]
     }
@@ -289,12 +289,12 @@
     },
     {
       "source": "AI",
-      "target": "Applied Cognitive Sciences to AI",
+      "target": "Brain-Inspired AI",
       "distance": 70
     },
     {
       "source": "Cognitive sciences & Neurosciences",
-      "target": "Applied Cognitive Sciences to AI",
+      "target": "Brain-Inspired AI",
       "distance": 70
     },
     {
