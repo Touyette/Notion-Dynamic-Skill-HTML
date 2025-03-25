@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeCategory = null;
   let links = [];
   let edges = null;
+  let nodes = []; // Add nodes to global scope
 
   detailsOverlay.addEventListener("click", hideDetails);
   closeDetails.addEventListener("click", hideDetails);
@@ -41,6 +42,80 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.key === "Escape" && detailsPanel.style.display === "block") {
       hideDetails();
     }
+  });
+
+  // Theme switching functionality
+  const themeToggle = document.getElementById('themeToggle');
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Function to update all colors based on current theme
+  function updateAllColors() {
+    console.log("Updating all colors, theme:", document.documentElement.getAttribute('data-theme')); // Debug log
+    
+    // Update edge colors
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    const lines = document.querySelectorAll('#edgesSvg line');
+    lines.forEach(line => {
+      line.setAttribute('stroke', color);
+    });
+
+    // Update node colors if we have a graph
+    if (nodeElems.length > 0) {
+      const graph = buildGraph(nodes, links);
+      updateNodeColors(graph);
+    }
+  }
+
+  // Function to set theme
+  function setTheme(theme) {
+    console.log("Setting theme to:", theme); // Debug log
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    
+    // Update button text and icon
+    const buttonText = themeToggle.querySelector('span');
+    const icon = themeToggle.querySelector('svg');
+    
+    if (theme === 'dark') {
+      buttonText.textContent = 'Light Mode';
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+    } else {
+      buttonText.textContent = 'Dark Mode';
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+    }
+    
+    // Force a delay to ensure CSS variables are updated before we read them
+    setTimeout(() => {
+      updateAllColors();
+    }, 50);
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    setTheme(savedTheme);
+  } else {
+    // Set initial theme based on system preference
+    setTheme(prefersDarkScheme.matches ? 'dark' : 'light');
+  }
+
+  // Listen for system theme changes
+  prefersDarkScheme.addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      setTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+  // Toggle theme on button click
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // Save the theme preference before reload
+    localStorage.setItem('theme', newTheme);
+    
+    // Just reload the page immediately - the new theme will be applied on page load
+    window.location.href = window.location.href;
   });
 
   function showDetails(nodeData, color) {
@@ -96,13 +171,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const x2 = cogScienceRect.left + cogScienceRect.width / 2 - containerRect.left;
     const y2 = cogScienceRect.top + cogScienceRect.height / 2 - containerRect.top;
     
+    const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    
     edgesSvg.append("line")
       .attr("x1", x1)
       .attr("y1", y1)
       .attr("x2", x2)
       .attr("y2", y2)
-      .attr("stroke", "#aaa")
-      .attr("stroke-width", 3)
+      .attr("stroke", edgeColor)
+      .attr("stroke-width", 2)
       .attr("stroke-opacity", 0.6)
       .attr("stroke-dasharray", "8,8")
       .attr("id", "categoryLink");
@@ -230,6 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (simulation) {
         simulation.alpha(1).restart();
       }
+      
+      // Update colors to reflect current theme
+      const graph = buildGraph(nodes, links);
+      updateNodeColors(graph);
     }, 500);
   }
   
@@ -255,13 +336,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return visibleSkills.includes(sourceId) && visibleSkills.includes(targetId);
     });
     
+    const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    
     // Create edges with a fade-in effect
     edges = edgesSvg.selectAll("line")
       .data(visibleLinks)
       .enter()
       .append("line")
-      .attr("stroke", "#aaa")
-      .attr("stroke-width", 1)
+      .attr("stroke", edgeColor)
+      .attr("stroke-width", 2)
       .attr("stroke-opacity", 0)
       .attr("class", "skill-link");
     
@@ -290,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .clamp(true);
 
       // Build node data
-      const nodes = skills.map(skill => {
+      nodes = skills.map(skill => {  // Remove const to use global nodes
         const rating  = skill.rating || 1;
         const radius  = radiusScale(rating);
         
@@ -494,16 +577,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const distFromData = dijkstra(graph, anchorData);
     const distFromCogn = dijkstra(graph, anchorCogn);
 
-    const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * t);
+    // Get the current theme colors
+    const dataScienceColor = getComputedStyle(document.documentElement).getPropertyValue('--data-science-color').trim();
+    const cognitiveScienceColor = getComputedStyle(document.documentElement).getPropertyValue('--cognitive-science-color').trim();
+    
+    // Check if we're in dark mode using theme attribute
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    console.log("Theme detection - isDarkMode:", isDarkMode); // Debug log
 
     nodeElems.forEach(({ nodeData, htmlElem }) => {
       const id = nodeData.id;
       if (id === anchorData) {
-        htmlElem.style.background = "#59f"; // bright blue
+        htmlElem.style.background = dataScienceColor;
         return;
       }
       if (id === anchorCogn) {
-        htmlElem.style.background = "#f55"; // red
+        htmlElem.style.background = cognitiveScienceColor;
         return;
       }
 
@@ -512,8 +601,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isFinite(dData)) dData = 1000;
       if (!isFinite(dCogn)) dCogn = 1000;
 
-      const ratio = dCogn / (dCogn + dData);
-      htmlElem.style.background = customRainbow(ratio);
+      // Calculate the ratio between 0 and 1, and invert it to switch gradient direction
+      const ratio = 1 - (dCogn / (dCogn + dData));
+      
+      if (isDarkMode) {
+        // In dark mode, use grayscale interpolation
+        const color = d3.interpolate(dataScienceColor, cognitiveScienceColor)(ratio);
+        htmlElem.style.background = color;
+      } else {
+        // In light mode, use the original rainbow colors but with corrected direction
+        const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * (1-t)); // Inverted t value
+        htmlElem.style.background = customRainbow(ratio);
+      }
     });
   }
 
