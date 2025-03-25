@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const titleBanner    = document.getElementById("titleBanner");
   const vizContainer   = document.getElementById("vizContainer");
   const nodesContainer = document.getElementById("nodesContainer");
+  const dataScience = document.getElementById("dataScience");
+  const cognitiveScience = document.getElementById("cognitiveScience");
   const edgesSvg       = d3.select("#edgesSvg");
   const detailsOverlay = document.getElementById("detailsOverlay");
   const detailsPanel   = document.getElementById("detailsPanel");
@@ -20,6 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let nodeElems  = [];
   let simulation = null;
+  let skillsByCategory = {
+    'dataScience': [],
+    'cognitiveScience': []
+  };
+  // Track explosion state for each category
+  let categoryState = {
+    'dataScience': { exploded: false },
+    'cognitiveScience': { exploded: false }
+  };
+  let activeCategory = null;
+  let links = [];
+  let edges = null;
+  let nodes = []; // Add nodes to global scope
 
   detailsOverlay.addEventListener("click", hideDetails);
   closeDetails.addEventListener("click", hideDetails);
@@ -27,6 +42,80 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.key === "Escape" && detailsPanel.style.display === "block") {
       hideDetails();
     }
+  });
+
+  // Theme switching functionality
+  const themeToggle = document.getElementById('themeToggle');
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Function to update all colors based on current theme
+  function updateAllColors() {
+    console.log("Updating all colors, theme:", document.documentElement.getAttribute('data-theme')); // Debug log
+    
+    // Update edge colors
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    const lines = document.querySelectorAll('#edgesSvg line');
+    lines.forEach(line => {
+      line.setAttribute('stroke', color);
+    });
+
+    // Update node colors if we have a graph
+    if (nodeElems.length > 0) {
+      const graph = buildGraph(nodes, links);
+      updateNodeColors(graph);
+    }
+  }
+
+  // Function to set theme
+  function setTheme(theme) {
+    console.log("Setting theme to:", theme); // Debug log
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    
+    // Update button text and icon
+    const buttonText = themeToggle.querySelector('span');
+    const icon = themeToggle.querySelector('svg');
+    
+    if (theme === 'dark') {
+      buttonText.textContent = 'Light Mode';
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+    } else {
+      buttonText.textContent = 'Dark Mode';
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+    }
+    
+    // Force a delay to ensure CSS variables are updated before we read them
+    setTimeout(() => {
+      updateAllColors();
+    }, 50);
+  }
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    setTheme(savedTheme);
+  } else {
+    // Set initial theme based on system preference
+    setTheme(prefersDarkScheme.matches ? 'dark' : 'light');
+  }
+
+  // Listen for system theme changes
+  prefersDarkScheme.addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      setTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+  // Toggle theme on button click
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // Save the theme preference before reload
+    localStorage.setItem('theme', newTheme);
+    
+    // Just reload the page immediately - the new theme will be applied on page load
+    window.location.href = window.location.href;
   });
 
   function showDetails(nodeData, color) {
@@ -42,6 +131,227 @@ document.addEventListener("DOMContentLoaded", () => {
   function hideDetails() {
     detailsPanel.style.display = "none";
     detailsOverlay.style.display = "none";
+  }
+
+  // Set up category bubbles
+  function setupCategoryBubbles() {
+    const categorySize = shortDim * 0.25; // 25% of the shorter dimension
+    
+    dataScience.style.width = `${categorySize}px`;
+    dataScience.style.height = `${categorySize}px`;
+    dataScience.style.left = `${width * 0.3 - categorySize / 2}px`;
+    dataScience.style.top = `${height / 2 - categorySize / 2}px`;
+    dataScience.style.fontSize = `${categorySize * 0.15}px`;
+    
+    cognitiveScience.style.width = `${categorySize}px`;
+    cognitiveScience.style.height = `${categorySize}px`;
+    cognitiveScience.style.left = `${width * 0.7 - categorySize / 2}px`;
+    cognitiveScience.style.top = `${height / 2 - categorySize / 2}px`;
+    cognitiveScience.style.fontSize = `${categorySize * 0.15}px`;
+    
+    dataScience.addEventListener("click", () => explodeBubble("dataScience"));
+    cognitiveScience.addEventListener("click", () => explodeBubble("cognitiveScience"));
+    
+    // Initial link between categories
+    createCategoryLink();
+  }
+  
+  // Create the initial link between the two category bubbles
+  function createCategoryLink() {
+    // Clear existing edges
+    edgesSvg.selectAll("*").remove();
+    
+    // Add a single link between categories
+    const dataScienceRect = dataScience.getBoundingClientRect();
+    const cogScienceRect = cognitiveScience.getBoundingClientRect();
+    const containerRect = vizContainer.getBoundingClientRect();
+    
+    const x1 = dataScienceRect.left + dataScienceRect.width / 2 - containerRect.left;
+    const y1 = dataScienceRect.top + dataScienceRect.height / 2 - containerRect.top;
+    const x2 = cogScienceRect.left + cogScienceRect.width / 2 - containerRect.left;
+    const y2 = cogScienceRect.top + cogScienceRect.height / 2 - containerRect.top;
+    
+    const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    
+    edgesSvg.append("line")
+      .attr("x1", x1)
+      .attr("y1", y1)
+      .attr("x2", x2)
+      .attr("y2", y2)
+      .attr("stroke", edgeColor)
+      .attr("stroke-width", 2)
+      .attr("stroke-opacity", 0.6)
+      .attr("stroke-dasharray", "8,8")
+      .attr("id", "categoryLink");
+  }
+
+  // Create explosion particles for the Michael Bay effect
+  function createExplosionParticles(category, x, y, radius) {
+    const particleCount = 50;
+    const particleContainer = document.createElement("div");
+    particleContainer.className = "explosion-particles";
+    vizContainer.appendChild(particleContainer);
+    
+    const baseColor = category === "dataScience" ? 
+      getComputedStyle(document.documentElement).getPropertyValue('--data-science-color').trim() : 
+      getComputedStyle(document.documentElement).getPropertyValue('--cognitive-science-color').trim();
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement("div");
+      particle.className = "explosion-particle";
+      
+      // Random size
+      const size = Math.random() * (radius * 0.2) + 5;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      // Start position
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      
+      // Random direction and distance
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * radius * 2;
+      const destX = x + Math.cos(angle) * distance;
+      const destY = y + Math.sin(angle) * distance;
+      
+      // Random color variation around the base color
+      particle.style.backgroundColor = i % 4 === 0 ? 'white' : baseColor;
+      
+      particleContainer.appendChild(particle);
+      
+      // Animate the particle
+      setTimeout(() => {
+        particle.style.transition = `all ${0.5 + Math.random() * 1}s ease-out`;
+        particle.style.left = `${destX}px`;
+        particle.style.top = `${destY}px`;
+        particle.style.opacity = '0';
+      }, 10);
+      
+      // Remove the particle after animation
+      setTimeout(() => {
+        particle.remove();
+      }, 2000);
+    }
+    
+    // Clean up the container after all animations
+    setTimeout(() => {
+      particleContainer.remove();
+    }, 2500);
+  }
+
+  // Michael Bay explosion effect
+  function explodeBubble(category) {
+    // If this category is already exploded, return
+    if (categoryState[category].exploded) return;
+    
+    // Set this category as active and mark it as exploded
+    activeCategory = category;
+    categoryState[category].exploded = true;
+    
+    const bubble = category === "dataScience" ? dataScience : cognitiveScience;
+    const otherCategory = category === "dataScience" ? "cognitiveScience" : "dataScience";
+    
+    // Get bubble position and size
+    const rect = bubble.getBoundingClientRect();
+    const containerRect = vizContainer.getBoundingClientRect();
+    const x = rect.left + rect.width / 2 - containerRect.left;
+    const y = rect.top + rect.height / 2 - containerRect.top;
+    const radius = rect.width / 2;
+    
+    // Remove the category link with transition if it exists
+    d3.select("#categoryLink").remove();
+    
+    // Create explosion particles
+    createExplosionParticles(category, x, y, radius);
+    
+    // Wait a bit, then hide the clicked bubble
+    setTimeout(() => {
+      bubble.style.transition = "all 0.2s ease";
+      bubble.style.opacity = "0";
+      bubble.style.transform = "scale(0)";
+      bubble.style.pointerEvents = "none"; // Disable clicks on hidden bubble
+    }, 100);
+    
+    // Reveal and throw skill bubbles
+    setTimeout(() => {
+      // Show only the skills for this category
+      nodeElems.forEach(({ nodeData, htmlElem }) => {
+        if (skillsByCategory[category].includes(nodeData.id)) {
+          htmlElem.classList.add("active");
+          htmlElem.style.pointerEvents = "auto"; // Ensure clicks work
+          
+          // Position the bubbles around where the big bubble was
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * radius;
+          const startX = x + Math.cos(angle) * distance - nodeData.radius;
+          const startY = y + Math.sin(angle) * distance - nodeData.radius;
+          
+          htmlElem.style.left = `${startX}px`;
+          htmlElem.style.top = `${startY}px`;
+          
+          // Release fixed positions
+          nodeData.x = startX + nodeData.radius;
+          nodeData.y = startY + nodeData.radius;
+          if (!nodeData.isAnchor) {
+            nodeData.fx = null;
+            nodeData.fy = null;
+          }
+        }
+      });
+      
+      // Create links between small bubbles with fade-in effect
+      createSkillLinks();
+      
+      // Restart the simulation with a strong force
+      if (simulation) {
+        simulation.alpha(1).restart();
+      }
+      
+      // Update colors to reflect current theme
+      const graph = buildGraph(nodes, links);
+      updateNodeColors(graph);
+    }, 500);
+  }
+  
+  // Create links between skill bubbles after explosion
+  function createSkillLinks() {
+    // Clear any existing links
+    edgesSvg.selectAll("line").remove();
+    
+    // Get all currently visible categories
+    const activeCategories = Object.keys(categoryState)
+      .filter(cat => categoryState[cat].exploded);
+    
+    // Get all skills from active categories
+    const visibleSkills = [];
+    activeCategories.forEach(cat => {
+      visibleSkills.push(...skillsByCategory[cat]);
+    });
+    
+    // Filter links to only include those where both source and target are visible
+    const visibleLinks = links.filter(link => {
+      const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+      const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+      return visibleSkills.includes(sourceId) && visibleSkills.includes(targetId);
+    });
+    
+    const edgeColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+    
+    // Create edges with a fade-in effect
+    edges = edgesSvg.selectAll("line")
+      .data(visibleLinks)
+      .enter()
+      .append("line")
+      .attr("stroke", edgeColor)
+      .attr("stroke-width", 2)
+      .attr("stroke-opacity", 0)
+      .attr("class", "skill-link");
+    
+    // Fade in the edges
+    edges.transition()
+      .duration(1000)
+      .attr("stroke-opacity", 0.7);
   }
 
   fetch("skills.json")
@@ -63,9 +373,22 @@ document.addEventListener("DOMContentLoaded", () => {
         .clamp(true);
 
       // Build node data
-      const nodes = skills.map(skill => {
+      nodes = skills.map(skill => {  // Remove const to use global nodes
         const rating  = skill.rating || 1;
         const radius  = radiusScale(rating);
+        
+        // Categorize the skill based on its relationship
+        // If it's closer to Data Science, put it in that category, otherwise in Cognitive Science
+        // Default to Data Science if unknown
+        let category = 'dataScience';
+        if (skill.name === "Data Science") {
+          category = 'dataScience';
+        } else if (skill.name === "Cognitive sciences & Neurosciences") {
+          category = 'cognitiveScience';
+        }
+        
+        skillsByCategory[category].push(skill.name);
+        
         return {
           id: skill.name,
           skill: skill,
@@ -77,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Build link data
-      const links = (relationships || [])
+      links = (relationships || [])
         .filter(rel => rel.source && rel.target)
         .map(rel => ({
           source: rel.source,
@@ -98,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const graph = buildGraph(nodes, links);
-
+      
       // Create the bubble elements
       nodes.forEach(nodeData => {
         const bubble = document.createElement("div");
@@ -143,30 +466,42 @@ document.addEventListener("DOMContentLoaded", () => {
         bubble.appendChild(textContainer);
 
         // On click => details
-        bubble.addEventListener("click", () => {
+        bubble.addEventListener("click", (event) => {
+          // Prevent the click from affecting drag
+          if (event.ctrlKey || event.shiftKey || event.metaKey) return;
+          
           showDetails(nodeData, bubble.style.background);
+          
+          // Prevent default to avoid issues with drag
+          event.preventDefault();
+          event.stopPropagation();
         });
 
-        // Draggable
-        d3.select(bubble)
-          .call(d3.drag()
-            .on("start", event => dragStarted(event, nodeData))
-            .on("drag",  event => dragged(event, nodeData))
-            .on("end",   event => dragEnded(event, nodeData))
-          );
+        // Initialize drag behavior outside the force layout
+        const dragBehavior = d3.drag()
+          .on("start", event => {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            nodeData.fx = nodeData.x;
+            nodeData.fy = nodeData.y;
+          })
+          .on("drag", event => {
+            nodeData.fx = event.x;
+            nodeData.fy = event.y;
+          })
+          .on("end", event => {
+            if (!event.active) simulation.alphaTarget(0);
+            if (!nodeData.isAnchor) {
+              nodeData.fx = null;
+              nodeData.fy = null;
+            }
+          });
+
+        // Apply the drag behavior to the bubble
+        d3.select(bubble).call(dragBehavior);
 
         nodesContainer.appendChild(bubble);
         nodeElems.push({ nodeData, htmlElem: bubble });
       });
-
-      // Create edges in SVG
-      const edges = edgesSvg.selectAll("line")
-        .data(links)
-        .enter()
-        .append("line")
-        .attr("stroke", "#aaa")
-        .attr("stroke-width", 1)
-        .attr("stroke-opacity", 0.7);
 
       // Force simulation
       simulation = d3.forceSimulation(nodes)
@@ -181,6 +516,30 @@ document.addEventListener("DOMContentLoaded", () => {
         .on("tick", ticked);
 
       updateNodeColors(graph);
+      setupCategoryBubbles();
+      
+      // Now categorize skills based on distances from each anchor
+      const distFromData = dijkstra(graph, "Data Science");
+      const distFromCogn = dijkstra(graph, "Cognitive sciences & Neurosciences");
+      
+      // Recategorize skills based on the distance
+      skillsByCategory = {
+        'dataScience': [],
+        'cognitiveScience': []
+      };
+      
+      nodes.forEach(node => {
+        const id = node.id;
+        let dData = distFromData[id];
+        let dCogn = distFromCogn[id];
+        
+        if (!isFinite(dData)) dData = 1000;
+        if (!isFinite(dCogn)) dCogn = 1000;
+        
+        // Assign to category based on which anchor is closer
+        const category = dData <= dCogn ? 'dataScience' : 'cognitiveScience';
+        skillsByCategory[category].push(id);
+      });
 
       function ticked() {
         nodeElems.forEach(({ nodeData, htmlElem }) => {
@@ -198,11 +557,14 @@ document.addEventListener("DOMContentLoaded", () => {
           htmlElem.style.top  = `${y - nodeData.radius}px`;
         });
 
-        edges
-          .attr("x1", d => getNodeById(nodes, d.source).x)
-          .attr("y1", d => getNodeById(nodes, d.source).y)
-          .attr("x2", d => getNodeById(nodes, d.target).x)
-          .attr("y2", d => getNodeById(nodes, d.target).y);
+        // Update edges if present
+        if (edges) {
+          edges
+            .attr("x1", d => getNodeById(nodes, d.source).x)
+            .attr("y1", d => getNodeById(nodes, d.source).y)
+            .attr("x2", d => getNodeById(nodes, d.target).x)
+            .attr("y2", d => getNodeById(nodes, d.target).y);
+        }
       }
     })
     .catch(err => console.error("Failed to load skills.json:", err));
@@ -215,16 +577,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const distFromData = dijkstra(graph, anchorData);
     const distFromCogn = dijkstra(graph, anchorCogn);
 
-    const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * t);
+    // Get the current theme colors
+    const dataScienceColor = getComputedStyle(document.documentElement).getPropertyValue('--data-science-color').trim();
+    const cognitiveScienceColor = getComputedStyle(document.documentElement).getPropertyValue('--cognitive-science-color').trim();
+    
+    // Check if we're in dark mode using theme attribute
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    console.log("Theme detection - isDarkMode:", isDarkMode); // Debug log
 
     nodeElems.forEach(({ nodeData, htmlElem }) => {
       const id = nodeData.id;
       if (id === anchorData) {
-        htmlElem.style.background = "#59f"; // bright blue
+        htmlElem.style.background = dataScienceColor;
         return;
       }
       if (id === anchorCogn) {
-        htmlElem.style.background = "#f55"; // red
+        htmlElem.style.background = cognitiveScienceColor;
         return;
       }
 
@@ -233,8 +601,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isFinite(dData)) dData = 1000;
       if (!isFinite(dCogn)) dCogn = 1000;
 
-      const ratio = dCogn / (dCogn + dData);
-      htmlElem.style.background = customRainbow(ratio);
+      // Calculate the ratio between 0 and 1, and invert it to switch gradient direction
+      const ratio = 1 - (dCogn / (dCogn + dData));
+      
+      if (isDarkMode) {
+        // In dark mode, use grayscale interpolation
+        const color = d3.interpolate(dataScienceColor, cognitiveScienceColor)(ratio);
+        htmlElem.style.background = color;
+      } else {
+        // In light mode, use the original rainbow colors but with corrected direction
+        const customRainbow = t => d3.interpolateRainbow(0.1 + 0.8 * (1-t)); // Inverted t value
+        htmlElem.style.background = customRainbow(ratio);
+      }
     });
   }
 
@@ -279,25 +657,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
     return distances;
-  }
-
-  function dragStarted(event, nodeData) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    nodeData.fx = nodeData.x;
-    nodeData.fy = nodeData.y;
-  }
-
-  function dragged(event, nodeData) {
-    nodeData.fx = event.x;
-    nodeData.fy = event.y;
-  }
-
-  function dragEnded(event, nodeData) {
-    if (!event.active) simulation.alphaTarget(0);
-    if (!nodeData.isAnchor) {
-      nodeData.fx = null;
-      nodeData.fy = null;
-    }
   }
 
   function buildSkillContentHTML(skill) {

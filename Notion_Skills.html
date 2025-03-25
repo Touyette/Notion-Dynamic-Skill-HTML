@@ -2,28 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skill Map Visualization</title>
   <style>
+    :root {
+      --primary-color: #4b5563;
+      --background-color: #f8fafc;
+      --surface-color: #ffffff;
+      --text-primary: rgba(30, 41, 59, 0.87);
+      --text-secondary: rgba(100, 116, 139, 0.6);
+      --border-color: #e2e8f0;
+      --hover-color: #f1f5f9;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --data-science-color: #3b82f6;
+      --cognitive-science-color: #ef4444;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #9ca3af;
+        --background-color: #121212;
+        --surface-color: #1e1e1e;
+        --text-primary: rgba(241, 245, 249, 0.87);
+        --text-secondary: rgba(148, 163, 184, 0.6);
+        --border-color: #334155;
+        --hover-color: #262626;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --data-science-color: #3b5998;
+        --cognitive-science-color: #b91c1c;
+      }
+    }
+
+    [data-theme="light"] {
+      --primary-color: #4b5563;
+      --background-color: #f8fafc;
+      --surface-color: #ffffff;
+      --text-primary: rgba(30, 41, 59, 0.87);
+      --text-secondary: rgba(100, 116, 139, 0.6);
+      --border-color: #e2e8f0;
+      --hover-color: #f1f5f9;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --data-science-color: #3b82f6;
+      --cognitive-science-color: #ef4444;
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #9ca3af;
+      --background-color: #121212;
+      --surface-color: #1e1e1e;
+      --text-primary: rgba(241, 245, 249, 0.87);
+      --text-secondary: rgba(148, 163, 184, 0.6);
+      --border-color: #334155;
+      --hover-color: #262626;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --data-science-color: #3b5998;
+      --cognitive-science-color: #b91c1c;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: #1a1a1a;
-      font-family: Arial, sans-serif;
+      background: var(--background-color);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
+      color: var(--text-primary);
+      line-height: 1.5;
     }
 
     #titleBanner {
       width: 100%;
-      height: 60px;
-      background-color: #444;
-      color: #fff;
+      height: 64px;
+      background-color: var(--surface-color);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0 24px;  
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 600;
+      box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    #themeToggle {
+      background: none;
+      border: 2px solid var(--text-primary);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      right: 24px;
+    }
+
+    #themeToggle:hover {
+      background-color: var(--hover-color);
+    }
+
+    #themeToggle svg {
+      width: 16px;
+      height: 16px;
     }
 
     #vizContainer {
@@ -32,9 +117,11 @@
       height: 70vh;
       margin-top: 3vh;
       margin-bottom: 2vh;
-      background-color: #333;
-      border: 2px solid #444;
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 4px 6px var(--shadow-color);
     }
 
     #edgesSvg {
@@ -54,95 +141,255 @@
       height: 100%;
     }
 
+    .category-bubble {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid white;
+      font-weight: bold;
+      z-index: 5;
+    }
+    
+    .category-bubble:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px var(--shadow-color);
+    }
+    
+    #dataScience {
+      background-color: var(--data-science-color);
+    }
+    
+    #cognitiveScience {
+      background-color: var(--cognitive-science-color);
+    }
+
     .skill-bubble {
       position: absolute;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: var(--text-primary);
       text-align: center;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      background-color: var(--surface-color);
+      box-shadow: 0 2px 4px var(--shadow-color);
       cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .skill-bubble span {
-      padding: 2px;
-      word-wrap: break-word;
-    }
-    .skill-bubble:hover {
-      transform: scale(1.07);
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transform: scale(0);
+      z-index: 3;
     }
 
-    /* Semi-transparent overlay behind details panel */
+    .skill-bubble::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+      z-index: -1;
+    }
+
+    .skill-bubble span {
+      padding: 4px;
+      word-wrap: break-word;
+      font-size: 14px;
+    }
+
+    .skill-bubble:hover {
+      transform: scale(1.15);
+      background-color: var(--hover-color);
+      box-shadow: 0 6px 12px var(--shadow-color);
+    }
+    
+    .skill-bubble:hover::after {
+      border-color: var(--primary-color);
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .skill-bubble.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .explosion-particle {
+      position: absolute;
+      border-radius: 50%;
+      background-color: white;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 4;
+    }
+
     #detailsOverlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.4);
       display: none;
-      z-index: 9999; /* below the panel, above everything else */
+      z-index: 9999;
+      backdrop-filter: blur(4px);
     }
 
-    /* Details panel overlay with dark style */
     #detailsPanel {
       position: fixed;
-      top: 10%;
-      left: 10%;
-      width: 80%;
-      height: 80%;
-      background: #1a1a1a;
-      color: #fff;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      background: var(--surface-color);
+      color: var(--text-primary);
       display: none;
-      z-index: 10000; /* above the overlay */
-      padding: 20px;
+      z-index: 10000;
+      padding: 24px;
       overflow-y: auto;
-      border: 2px solid #444;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      border-radius: 16px;
+      box-shadow: 0 8px 16px var(--shadow-color);
       box-sizing: border-box;
     }
 
     #skillBanner {
-      height: 60px;
+      height: 64px;
       display: flex;
       align-items: center;
-      padding: 0 20px;
-      margin-bottom: 20px;
+      padding: 0 24px;
+      margin-bottom: 24px;
       box-sizing: border-box;
-      color: #fff;
-      font-size: 22px;
-      font-weight: bold;
+      color: var(--text-primary);
+      font-size: 24px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
     }
 
     #closeDetails {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 5px 10px;
+      top: 38px;
+      right: 38px;
+      padding: 8px 16px;
       cursor: pointer;
-      background: #444;
-      border: none;
-      color: #fff;
+      background: none;
+      border: 2px solid var(--text-primary);
+      color: var(--text-primary);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10001;
+    }
+
+    #closeDetails:hover {
+      background-color: var(--hover-color);
+    }
+
+    #closeDetails svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    #detailsContent {
+      padding: 16px 0;
+    }
+
+    /* Modern scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 4px 0;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 100px;
+      opacity: 0.6;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-color);
+      opacity: 1;
+    }
+
+    /* Firefox scrollbar */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) transparent;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skill-bubble,
+      #closeDetails,
+      .category-bubble {
+        transition: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="titleBanner">Pierre-Axel's Skill Map [95% done]</div>
-
-  <div id="vizContainer">
-    <svg id="edgesSvg"></svg>
-    <div id="nodesContainer"></div>
+  <div id="titleBanner" role="banner">
+    <span>Pierre-Axel's Skill Map</span>
+    <button id="themeToggle" aria-label="Toggle theme">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+      <span>Dark Mode</span>
+    </button>
   </div>
 
-  <!-- Overlay behind details panel -->
-  <div id="detailsOverlay"></div>
+  <main id="vizContainer" role="main">
+    <svg id="edgesSvg" aria-hidden="true"></svg>
+    <div id="nodesContainer" role="application" aria-label="Interactive skill map visualization">
+      <div id="dataScience" class="category-bubble" role="button" aria-label="Technical & Data Skills category">Technical & Data Skills</div>
+      <div id="cognitiveScience" class="category-bubble" role="button" aria-label="Human & Cognitive Skills category">Human & Cognitive Skills</div>
+    </div>
+  </main>
 
-  <!-- Details panel for displaying node details -->
-  <div id="detailsPanel">
+  <div id="detailsOverlay" role="presentation" aria-hidden="true"></div>
+
+  <div id="detailsPanel" role="dialog" aria-labelledby="skillBanner" aria-modal="true">
     <div id="skillBanner"></div>
-    <button id="closeDetails">Close</button>
+    <button id="closeDetails" aria-label="Close details panel">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      <span>Close</span>
+    </button>
     <div id="detailsContent"></div>
   </div>
 
