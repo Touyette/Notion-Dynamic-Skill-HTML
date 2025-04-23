@@ -195,7 +195,7 @@
         {
           "type": "image",
           "src": "Projects Data/DS_psy.png",
-          "description": "One example of graph made with Gephi, about Mental health techniques used in France. I've scraped 3 whole sites about mental health practitionners in France, and used either genAI / JSON fetching for extracting the relevant information. The links are 5-neighbors Jaccard similarity scores. <a href=\"https://touyette.github.io/Notion-Dynamic-Skill-HTML/Projects%20Data/PsynetOnly%2CJaccard5%2CUnionsize10%2Coccurence2%2CJifanYu.svg\">Detailed view of the graph</a>"
+          "description": "One example of graph made with Gephi, about Mental health techniques used in France. I've scraped 3 whole sites about mental health practitionners in France, and used either genAI / JSON fetching for extracting the relevant information. The links are 5-neighbors Jaccard similarity scores. <a href=\"https://touyette.github.io/Notion-Dynamic-Skill-HTML/Projects%20Data/PsynetOnly%2CJaccard5%2CUnionsize10%2Coccurence2%2CJifanYu.svg\">CTRL+click me for a detailed view of the graph</a>"
         }
       ]
     },
